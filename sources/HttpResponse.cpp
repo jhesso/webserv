@@ -1,7 +1,7 @@
 #include "../includes/HttpResponse.hpp"
 
 /******************************************************************************/
-/*						CONSTRUCTORS & DESTRUCTORS							  */
+/*						CONSTRUCTORS & DESTRUCTORS								*/
 /******************************************************************************/
 
 HttpResponse::HttpResponse(HttpRequest &src, Server *parent): 
@@ -28,21 +28,15 @@ HttpResponse::~HttpResponse(void)
 	_reqHeaders.clear();
 }
 
-/******************************************************************************/
-/*							PRIVATE FUNCTIONS								  */
-/******************************************************************************/
-
 /*make this a error_page generator that modifies the string to have the right stuff*/
 /*if not explicitly defined for a code in config*/
 std::string	HttpResponse::findErrorPage(int code)
 {
-	if (this->_parent->_fileSystem->getErrorPage(code) != "")
-	{
+	if (this->_parent->_fileSystem->getErrorPage(code) != "") {
 		_reqPath = "error.html";
 		return this->_parent->_fileSystem->getErrorPage(code);
 	}
-	if (code >= 400 && code <= 511)
-	{
+	if (code >= 400 && code <= 511) {
 		std::string error_page_content = R"(
 		<!DOCTYPE html>
 		<html lang="en">
@@ -103,8 +97,7 @@ std::string HttpResponse::findFreeName(Folder &folder, std::string path)
 		extension = name.substr(dotPos);
 		name = name.substr(0, dotPos);
 	}
-	else
-	{
+	else {
 		extension = ".txt";
 	}
 	int i = 1;
@@ -121,7 +114,6 @@ std::string HttpResponse::findFreeName(Folder &folder, std::string path)
 		}
 		i++;
 	}
-
 }
 
 void	HttpResponse::doGet()
@@ -148,7 +140,7 @@ void	HttpResponse::doGet()
 					_body = folder._defaultPage;
 					infoCode = 200;
 					_reqPath = "index.html";
-					return;	
+					return ;
 				}
 				else
 				{
@@ -167,13 +159,11 @@ void	HttpResponse::doGet()
 				_reqPath = "autoindex.html";
 				return;
 			}
-			else
-			{
+			else {
 				throw std::runtime_error("404");
 			}
 		}
-		else
-		{
+		else {
 			throw std::runtime_error("403");
 		}
 	}
@@ -185,8 +175,7 @@ void	HttpResponse::doGet()
 		_body = entry.first;
 		infoCode = 200;
 	}
-	else
-	{
+	else {
 		throw std::runtime_error("404");
 	}
 }
@@ -197,8 +186,7 @@ void	HttpResponse::doPost()
 	{
 		_reqPath = _reqPath.substr(0, _reqPath.size() - 6);
 	}
-	else
-	{
+	else {
 		throw std::runtime_error("403");
 	}
 
@@ -214,7 +202,7 @@ void	HttpResponse::doPost()
 			{
 				_reqPath = folder._redirectPath;
 				infoCode = 307;
-				return;
+				return ;
 			}
 			if (!folder._postAllowed)
 			{
@@ -259,19 +247,16 @@ void	HttpResponse::doPost()
 				}
 				throw std::runtime_error("409");
 			}
-			catch (std::exception &e)
-			{
+			catch (std::exception &e) {
 				throw std::runtime_error(e.what());
 			}
 
 		}
-		else
-		{
+		else {
 			throw std::runtime_error("403");
 		}
 	}
-	else
-	{
+	else {
 		throw std::runtime_error("404");
 	}
 }
@@ -290,13 +275,11 @@ void	HttpResponse::doDelete()
 				infoCode = 307;
 				return;
 			}
-			else
-			{
+			else {
 				throw std::runtime_error("403");
 			}
 		}
-		else if (entry.second == IS_DENIED_DIRECTORY)
-		{
+		else if (entry.second == IS_DENIED_DIRECTORY) {
 			throw std::runtime_error("403");
 		}
 		else if (entry.second == IS_FILE)
@@ -309,13 +292,11 @@ void	HttpResponse::doDelete()
 			this->_parent->_fileSystem->_numPendingDeletes++;
 			infoCode = 204;
 		}
-		else
-		{
+		else {
 			throw std::runtime_error("403");
 		}
 	}
-	else
-	{
+	else {
 		throw std::runtime_error("404");
 	}
 }
@@ -379,7 +360,7 @@ char **HttpResponse::createEnvs()
 
 	char **ret = new char*[envs.size() + 1];
 	ret[envs.size()] = NULL;
-	int i  = 0;
+	int i	= 0;
 	for (auto& iter : envs)
 	{
 		std::string entry = iter.first + "=" + iter.second;
@@ -461,8 +442,7 @@ bool HttpResponse::completeMe(int status)
 			_body += std::string(buffer, bytesRead);
 		}
 	}
-	else
-	{
+	else {
 		infoCode = 500;
 		this->_body = findErrorPage(this->infoCode);
 	}
@@ -473,75 +453,73 @@ bool HttpResponse::completeMe(int status)
 
 std::string	HttpResponse::findPhrase(int code)
 {
-  const std::map<int, std::string> phrases = {
-      {100, "Continue"},
-      {101, "Switching Protocols"},
-      {102, "Processing"},
-      {200, "OK"},
-      {201, "Created"},
-      {202, "Accepted"},
-      {203, "Non-Authoritative Information"},
-      {204, "No Content"},
-      {205, "Reset Content"},
-      {206, "Partial Content"},
-      {300, "Multiple Choices"},
-      {301, "Moved Permanently"},
-      {302, "Found"},
-      {303, "See Other"},
-      {304, "Not Modified"},
-      {305, "Use Proxy"},
-      {307, "Temporary Redirect"},
-      {308, "Permanent Redirect"},
-      {400, "Bad Request"},
-      {401, "Unauthorized"},
-      {402, "Payment Required"},
-      {403, "Forbidden"},
-      {404, "Not Found"},
-      {405, "Method Not Allowed"},
-      {406, "Not Acceptable"},
-      {407, "Proxy Authentication Required"},
-      {408, "Request Timeout"},
-      {409, "Conflict"},
-      {410, "Gone"},
-      {411, "Length Required"},
-      {412, "Precondition Failed"},
-      {413, "Payload Too Large"},
-      {414, "URI Too Long"},
-      {415, "Unsupported Media Type"},
-      {416, "Range Not Satisfiable"},
-      {417, "Expectation Failed"},
-      {418, "I'm a teapot"},  // RFC 2324 humor
-      {421, "Misdirected Request"},
-      {422, "Unprocessable Entity"},
-      {423, "Locked"},
-      {424, "Failed Dependency"},
-      {425, "Unordered Collection"},
-      {426, "Upgrade Required"},
-      {428, "Precondition Required"},
-      {429, "Too Many Requests"},
-      {431, "Request Header Fields Too Large"},
-      {451, "Unavailable For Legal Reasons"},
-      {500, "Internal Server Error"},
-      {501, "Not Implemented"},
-      {502, "Bad Gateway"},
-      {503, "Service Unavailable"},
-      {504, "Gateway Timeout"},
-      {505, "HTTP Version Not Supported"},
-      {506, "Variant Also Negotiates"},
-      {507, "Insufficient Storage"},
-      {508, "Loop Detected"},
-      {510, "Not Extended"},
-      {511, "Network Authentication Required"}
-  };
-  std::map<int, std::string>::const_iterator it = phrases.find(code);
-  if (it != phrases.end())
-  {
-    return it->second;
-  }
-  else
-  {
-    return "Unknown Status Code";
-  }
+	const std::map<int, std::string> phrases = {
+		{100, "Continue"},
+		{101, "Switching Protocols"},
+		{102, "Processing"},
+		{200, "OK"},
+		{201, "Created"},
+		{202, "Accepted"},
+		{203, "Non-Authoritative Information"},
+		{204, "No Content"},
+		{205, "Reset Content"},
+		{206, "Partial Content"},
+		{300, "Multiple Choices"},
+		{301, "Moved Permanently"},
+		{302, "Found"},
+		{303, "See Other"},
+		{304, "Not Modified"},
+		{305, "Use Proxy"},
+		{307, "Temporary Redirect"},
+		{308, "Permanent Redirect"},
+		{400, "Bad Request"},
+		{401, "Unauthorized"},
+		{402, "Payment Required"},
+		{403, "Forbidden"},
+		{404, "Not Found"},
+		{405, "Method Not Allowed"},
+		{406, "Not Acceptable"},
+		{407, "Proxy Authentication Required"},
+		{408, "Request Timeout"},
+		{409, "Conflict"},
+		{410, "Gone"},
+		{411, "Length Required"},
+		{412, "Precondition Failed"},
+		{413, "Payload Too Large"},
+		{414, "URI Too Long"},
+		{415, "Unsupported Media Type"},
+		{416, "Range Not Satisfiable"},
+		{417, "Expectation Failed"},
+		{418, "I'm a teapot"},
+		{421, "Misdirected Request"},
+		{422, "Unprocessable Entity"},
+		{423, "Locked"},
+		{424, "Failed Dependency"},
+		{425, "Unordered Collection"},
+		{426, "Upgrade Required"},
+		{428, "Precondition Required"},
+		{429, "Too Many Requests"},
+		{431, "Request Header Fields Too Large"},
+		{451, "Unavailable For Legal Reasons"},
+		{500, "Internal Server Error"},
+		{501, "Not Implemented"},
+		{502, "Bad Gateway"},
+		{503, "Service Unavailable"},
+		{504, "Gateway Timeout"},
+		{505, "HTTP Version Not Supported"},
+		{506, "Variant Also Negotiates"},
+		{507, "Insufficient Storage"},
+		{508, "Loop Detected"},
+		{510, "Not Extended"},
+		{511, "Network Authentication Required"}
+	};
+	std::map<int, std::string>::const_iterator it = phrases.find(code);
+	if (it != phrases.end()) {
+		return it->second;
+	}
+	else {
+		return "Unknown Status Code";
+	}
 }
 
 bool	HttpResponse::isCgi()
@@ -559,12 +537,10 @@ bool	HttpResponse::isCgi()
 	if (entry.second == IS_FILE)
 	{
 		Folder &folder = this->_parent->_fileSystem->getFileParentFolder(_reqPath);
-		if (folder._cgiAllowed)
-		{
+		if (folder._cgiAllowed) {
 			return true;
 		}
-		else
-		{
+		else {
 			return false;
 		}
 	}
@@ -591,12 +567,10 @@ std::string	HttpResponse::getContentType()
 			{"jpeg", "image/jpeg"},
 			{"png", "image/png"},
 			{"gif", "image/gif"},
-			// Add more mappings as needed
 		};
 
 		std::map<std::string, std::string>::const_iterator it = contentTypes.find(fileExtension);
-		if (it != contentTypes.end())
-		{
+		if (it != contentTypes.end()) {
 			return it->second; // Return the mapped content type
 		}
 		else
@@ -615,8 +589,7 @@ std::string	HttpResponse::getContentType()
 			return "application/octet-stream"; // Default for unknown types
 		}
 	}
-	else
-	{
+	else {
 		return "application/octet-stream";
 	}
 }
@@ -639,10 +612,6 @@ bool	HttpResponse::hasBeenSent()
 {
 	return isSent;
 }
-
-/******************************************************************************/
-/*							PUBLIC FUNCTIONS								  */
-/******************************************************************************/
 
 void	HttpResponse::parseResponse()
 {

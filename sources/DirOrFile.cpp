@@ -1,9 +1,5 @@
 #include "../includes/DirOrFile.hpp"
 
-/******************************************************************************/
-/*						CONSTRUCTORS & DESTRUCTORS							  */
-/******************************************************************************/
-
 DirOrFile::DirOrFile(bool imADir, std::string content)
 {
 	_imDirectory = imADir;
@@ -28,22 +24,14 @@ DirOrFile::DirOrFile(bool imADir, std::string name, std::string path):
 			_fileContent += content + "\n";
 		}
 		file.close();
-	}	
+	}
 }
 
 DirOrFile::DirOrFile(const DirOrFile& other):
-    _imDirectory(other._imDirectory),
-    _fileContent(other._fileContent) 
-{
-}
+	_imDirectory(other._imDirectory),
+	_fileContent(other._fileContent) {}
 
-DirOrFile::~DirOrFile(void)
-{
-}
-
-/******************************************************************************/
-/*							PUBLIC FUNCTIONS								  */
-/******************************************************************************/
+DirOrFile::~DirOrFile(void){}
 
 bool DirOrFile::amIDir()
 {

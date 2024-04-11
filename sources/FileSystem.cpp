@@ -1,10 +1,6 @@
 #include <iostream>
 #include "../includes/FileSystem.hpp"
 
-/******************************************************************************/
-/*						CONSTRUCTORS & DESTRUCTORS							  */
-/******************************************************************************/
-
 FileSystem::FileSystem(Configuration &configuration):
 	_root(configuration.getValue("root")),
 	_index((configuration.getValue("index"))),
@@ -45,7 +41,6 @@ FileSystem::FileSystem(Configuration &configuration):
 	}
 	if (!_index.empty())
 	{
-		/*read the file*/
 		std::ifstream file("." + _index);
 		if (!file.is_open())
 		{
@@ -80,10 +75,6 @@ FileSystem::~FileSystem(void)
 	std::cout << "FileSystem destructor called" << std::endl;
 }
 
-/******************************************************************************/
-/*								GETTERS										  */
-/******************************************************************************/
-
 std::string FileSystem::getErrorPage(int errorNum)
 {
 	try
@@ -95,10 +86,6 @@ std::string FileSystem::getErrorPage(int errorNum)
 		return "";
 	}
 }
-
-/******************************************************************************/
-/*							PRIVATE FUNCTIONS								  */
-/******************************************************************************/
 
 bool FileSystem::rootExists()
 {
@@ -139,17 +126,17 @@ std::pair<std::string, std::string> FileSystem::createPaths(std::string serverRo
 
 std::map<std::string, DirOrFile>  FileSystem::readDirectory(std::string path)
 {
-    std::map<std::string, DirOrFile> folder;
+	std::map<std::string, DirOrFile> folder;
 
 	std::string relativePath = "." + path;
-    DIR *dir = opendir(relativePath.c_str());
-    if (dir == nullptr)
+	DIR *dir = opendir(relativePath.c_str());
+	if (dir == nullptr)
 	{
-        std::cout << "Error opening directory: " << relativePath << std::endl;
+		std::cout << "Error opening directory: " << relativePath << std::endl;
 		throw std::runtime_error("Error opening directory");
-    }
-    struct dirent *entry;
-    while ((entry = readdir(dir)) != nullptr)
+	}
+	struct dirent *entry;
+	while ((entry = readdir(dir)) != nullptr)
 	{
 		try
 		{
@@ -169,14 +156,10 @@ std::map<std::string, DirOrFile>  FileSystem::readDirectory(std::string path)
 			(void)e;
 			continue;
 		}
-    }
-    closedir(dir);
-    return folder;
+	}
+	closedir(dir);
+	return folder;
 }
-
-/******************************************************************************/
-/*							PUBLIC FUNCTIONS								  */
-/******************************************************************************/
 
 void FileSystem::printFileSystem()
 {

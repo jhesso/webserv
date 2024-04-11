@@ -1,9 +1,5 @@
 #include "../includes/Configuration.hpp"
 
-/******************************************************************************/
-/*						CONSTRUCTORS & DESTRUCTORS							  */
-/******************************************************************************/
-
 Configuration::Configuration(std::string configData)
 {
 	std::string line;
@@ -67,8 +63,7 @@ Configuration::Configuration(std::string configData)
 					if (value.find("DELETE") != std::string::npos && key.find("DELETE") == std::string::npos)
 						locationDirectives["DELETE"] = "";
 				}
-				else
-				{
+				else {
 					locationDirectives[key] = value;
 				}
 			}
@@ -110,11 +105,9 @@ Configuration::Configuration(std::string configData)
 				key = key + " " + errorNum;
 				_serverDirectives[key] = value;
 			}
-			else
-			{
+			else {
 				_serverDirectives[key] = value;
 			}
-				
 		}
 	}
 	auto it = _serverDirectives.find("listen");
@@ -133,22 +126,16 @@ Configuration::Configuration(std::string configData)
 		throw std::runtime_error("Error: no host directive found");
 }
 
-Configuration::~Configuration(void)
-{
-}
-
-/******************************************************************************/
-/*							PRIVATE FUNCTIONS								  */
-/******************************************************************************/
+Configuration::~Configuration(void) {}
 
 std::string Configuration::trimLeadingSpaces(const std::string& input)
 {
-    size_t startPos = input.find_first_not_of(" \t");
-    if (startPos == std::string::npos)
+	size_t startPos = input.find_first_not_of(" \t");
+	if (startPos == std::string::npos)
 	{
-        return "";
-    }
-    return input.substr(startPos);
+		return "";
+	}
+	return input.substr(startPos);
 }
 
 std::string Configuration::trimTrailingSpaces(const std::string& input)
@@ -160,10 +147,6 @@ std::string Configuration::trimTrailingSpaces(const std::string& input)
 	}
 	return input.substr(0, endPos + 1);
 }
-
-/******************************************************************************/
-/*							PUBLIC FUNCTIONS								  */
-/******************************************************************************/
 
 void Configuration::printMyVals()
 {

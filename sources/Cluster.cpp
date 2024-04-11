@@ -17,12 +17,12 @@ void printMap(const std::map<std::string, std::string>& mapToPrint)
 {
   if (mapToPrint.empty())
   {
-    std::cout << "Map is empty." << std::endl;
-    return;
+	std::cout << "Map is empty." << std::endl;
+	return;
   }
   for (const auto& [key, value] : mapToPrint)
   {
-    std::cout << "Key: " << key << ", Value: " << value << std::endl;
+	std::cout << "Key: " << key << ", Value: " << value << std::endl;
   }
 }
 
@@ -38,10 +38,6 @@ std::vector<std::string> addHosts(std::vector<Server> &servers, unsigned long my
 	return ret;
 }
 
-/******************************************************************************/
-/*						CONSTRUCTORS & DESTRUCTORS							  */
-/******************************************************************************/
-
 Cluster::Cluster(std::vector<Configuration> configs)
 {
 	global_shouldRun = true;
@@ -56,7 +52,7 @@ Cluster::Cluster(std::vector<Configuration> configs)
 		{
 			ptr = new FileSystem(configs[i]);
 			this->filesystems.push_back(ptr);
-            this->servers.push_back(Server(configs[i], ptr, portsAndSocks));
+			this->servers.push_back(Server(configs[i], ptr, portsAndSocks));
 			portsAndSocks.push_back(std::make_pair(this->servers[i].getPort(), this->servers[i].getSocket()));
 		}
 		/*add vectors of other hosts to all servers*/
@@ -111,29 +107,29 @@ void Cluster::addServers(std::vector<pollfd> &pollfds)
 /******************************************************************************/
 
 /*need to hange this to have each server to have own connection manage and the right one needs to be called*/
-void Cluster::theMainLoop()
+void Cluster::MainLoop()
 {
-    int clientSocket;
+	int clientSocket;
 	std::map<int, Server*> clientServerMap;
-    std::vector<pollfd> pollfds;
+	std::vector<pollfd> pollfds;
 	Server* curServer;
 	Server* tmpServer;
 	Server* associatedServer;
 	bool performedAction = false;
 
-    addServers(pollfds);
+	addServers(pollfds);
 
 	bool loadBalancer = false;
 	std::cout << "###READY###" << std::endl;
-    while (global_shouldRun)
-    {
-        int numEvents = poll(pollfds.data(), pollfds.size(), 0);
+	while (global_shouldRun)
+	{
+		int numEvents = poll(pollfds.data(), pollfds.size(), 0);
 
-        if (numEvents == -1 && global_shouldRun)
-        {
-            std::cerr << "Error in poll(): " << std::endl;
-            continue;
-        }
+		if (numEvents == -1 && global_shouldRun)
+		{
+			std::cerr << "Error in poll(): " << std::endl;
+			continue ;
+		}
 		loadBalancer = !loadBalancer;
 		if (!loadBalancer)
 		{
@@ -151,7 +147,7 @@ void Cluster::theMainLoop()
 						if (tmpServer->_host == hst)
 						{
 							tmpServer->_connectionManager->recvMovable(toMove);
-							break;
+							break ;
 						}
 					}
 				}
@@ -166,7 +162,7 @@ void Cluster::theMainLoop()
 							if (pollfds[i].fd == rmS)
 							{
 								pollfds.erase(pollfds.begin() + i);
-								break;
+								break ;
 							}
 						}
 						clientServerMap.erase(rmS);
@@ -195,34 +191,34 @@ void Cluster::theMainLoop()
 				continue;
 		}
 
-        for (unsigned long i = 0; i < pollfds.size(); ++i)
-        {
-            if (pollfds[i].revents & POLLIN)
-            {
-                if (i < this->serverCount)
-                {
-                    // Accept connection on the correct server socket
-                    clientSocket = accept(this->servers[i].getSocket(), nullptr, nullptr);
+		for (unsigned long i = 0; i < pollfds.size(); ++i)
+		{
+			if (pollfds[i].revents & POLLIN)
+			{
+				if (i < this->serverCount)
+				{
+					// Accept connection on the correct server socket
+					clientSocket = accept(this->servers[i].getSocket(), nullptr, nullptr);
 					if (clientSocket != -1)
-                    {
-                        pollfds.push_back(newSocketNode(clientSocket));
+					{
+						pollfds.push_back(newSocketNode(clientSocket));
 						clientServerMap[clientSocket] = &this->servers[i];
-                    }
-                }
-                else /*check from the map which servers connection manager to call*/
-                {
+					}
+				}
+				else /*check from the map which servers connection manager to call*/
+				{
 					clientSocket = pollfds[i].fd;
-    				associatedServer = clientServerMap[clientSocket];
-                    // Handle data on client sockets here
-                    if (!associatedServer->_connectionManager->handleConnection(pollfds[i].fd))
+					associatedServer = clientServerMap[clientSocket];
+					// Handle data on client sockets here
+					if (!associatedServer->_connectionManager->handleConnection(pollfds[i].fd))
 					{
 						close(pollfds[i].fd);
-                        pollfds.erase(pollfds.begin() + i);
+						pollfds.erase(pollfds.begin() + i);
 						clientServerMap.erase(clientSocket);
 					}
 					break ;
 				}
-            }
-        }
-    }
+			}
+		}
+	}
 }

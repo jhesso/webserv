@@ -1,20 +1,8 @@
 #include "../includes/ConnectionManager.hpp"
 
-/******************************************************************************/
-/*						CONSTRUCTORS & DESTRUCTORS							  */
-/******************************************************************************/
+ConnectionManager::ConnectionManager(Server *parent) : _hasMovableRequest(false), _parent(parent), _responsesReady(0){}
 
-ConnectionManager::ConnectionManager(Server *parent) : _hasMovableRequest(false), _parent(parent), _responsesReady(0)
-{
-}
-
-ConnectionManager::~ConnectionManager(void)
-{
-}
-
-/******************************************************************************/
-/*							PRIVATE FUNCTIONS								  */
-/******************************************************************************/
+ConnectionManager::~ConnectionManager(void){}
 
 HttpRequest	ConnectionManager::getMovable()
 {
@@ -33,14 +21,14 @@ void ConnectionManager::recvMovable(HttpRequest objct)
 
 int ConnectionManager::findObjectIndex(int cs)
 {
-  for (size_t i = 0; i < _requests.size(); ++i)
-  {
-    if (_requests[i].compareCs(cs))
+	for (size_t i = 0; i < _requests.size(); ++i)
 	{
-      return static_cast<int>(i);
-    }
-  }
-  return -1; // Object not found
+	if (_requests[i].compareCs(cs))
+	{
+		return static_cast<int>(i);
+	}
+	}
+	return -1;
 }
 
 int	ConnectionManager::handleResponse()
@@ -77,7 +65,7 @@ bool	ConnectionManager::hasRunningProcesses()
 		if (_responses[i].hasRunningProcess())
 			return (true);
 	}
-	return (false);
+	return false;
 }
 
 bool	ConnectionManager::completeProcess()
@@ -111,20 +99,20 @@ bool	ConnectionManager::completeProcess()
 bool	ConnectionManager::hasReadyResponses()
 {
 	if (_responsesReady > 0)
-		return (true);
-	return (false);
+		return true;
+	return false;
 }
 
 bool	ConnectionManager::handleConnection(int cs)
 {
-    const int bufferSize = 1024;
-    char buffer[bufferSize];
+	const int bufferSize = 1024;
+	char buffer[bufferSize];
 
-    ssize_t bytesRead = recv(cs, buffer, bufferSize - 1, 0);
-    if (bytesRead == -1 || bytesRead == 0)
+	ssize_t bytesRead = recv(cs, buffer, bufferSize - 1, 0);
+	if (bytesRead == -1 || bytesRead == 0)
 	{
-        return false;
-    }
+		return false;
+	}
 	else
 	{
 		buffer[bytesRead] = '\0';
@@ -184,6 +172,5 @@ bool	ConnectionManager::handleConnection(int cs)
 			}
 		}
 		return true;
-    }
+	}
 }
-

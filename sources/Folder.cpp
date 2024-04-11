@@ -1,25 +1,25 @@
 #include "../includes/Folder.hpp"
 
 Folder::Folder(const Folder& other):
-      _isRedirected(other._isRedirected),
-      _redirectPath(other._redirectPath),
-	  _hasDefaultPage(other._hasDefaultPage),
-	  _defaultPage(other._defaultPage),
-      _postAllowed(other._postAllowed),
-      _getAllowed(other._getAllowed),
-      _deleteAllowed(other._deleteAllowed),
-      _cgiAllowed(other._cgiAllowed),
-      _autoIndexOn(other._autoIndexOn),
-	  _isRooted(other._isRooted),
-	  _rootedTo(other._rootedTo),
-	  _uploadPass(other._uploadPass),
-	  _uploadPath(other._uploadPath)
-  {
-      for (const auto& [key, value] : other._folderContent)
-	  {
-          _folderContent.emplace(key, value);
-      }
-  }
+		_isRedirected(other._isRedirected),
+		_redirectPath(other._redirectPath),
+		_hasDefaultPage(other._hasDefaultPage),
+		_defaultPage(other._defaultPage),
+		_postAllowed(other._postAllowed),
+		_getAllowed(other._getAllowed),
+		_deleteAllowed(other._deleteAllowed),
+		_cgiAllowed(other._cgiAllowed),
+		_autoIndexOn(other._autoIndexOn),
+		_isRooted(other._isRooted),
+		_rootedTo(other._rootedTo),
+		_uploadPass(other._uploadPass),
+		_uploadPath(other._uploadPath)
+	{
+		for (const auto& [key, value] : other._folderContent)
+		{
+			_folderContent.emplace(key, value);
+		}
+	}
 
 Folder::Folder(std::map<std::string, DirOrFile> folder, std::vector<std::pair<std::string, std::map<std::string, std::string>>> locations, std::string path):
 	_folderContent(folder),
@@ -54,7 +54,6 @@ Folder::Folder(std::map<std::string, DirOrFile> folder, std::vector<std::pair<st
 			{
 				_deleteAllowed = true;
 			}
-
 
 			auto it4 = dirConfig.find("cgi");
 			if (it4 != dirConfig.end())
@@ -112,31 +111,31 @@ Folder::Folder(std::map<std::string, DirOrFile> folder, std::vector<std::pair<st
 
 Folder& Folder::operator=(const Folder& other)
 {
-  if (this != &other)
-  {
-    _folderContent.clear();
-    for (auto [key, value] : other._folderContent)
+	if (this != &other)
 	{
-      // Create a new DirOrFile object for each entry
-      _folderContent.emplace(key, DirOrFile(value.amIDir(), value.getFileContent())); // This assumes a copy constructor exists for DirOrFile
-    }
+	_folderContent.clear();
+	for (auto [key, value] : other._folderContent)
+	{
+		// Create a new DirOrFile object for each entry
+		_folderContent.emplace(key, DirOrFile(value.amIDir(), value.getFileContent())); // This assumes a copy constructor exists for DirOrFile
+	}
 
-    // Copy other primitive members
-    _isRedirected = other._isRedirected;
-    _redirectPath = other._redirectPath;
-    _hasDefaultPage = other._hasDefaultPage;
-    _defaultPage = other._defaultPage;
-    _postAllowed = other._postAllowed;
-    _getAllowed = other._getAllowed;
-    _deleteAllowed = other._deleteAllowed;
-    _cgiAllowed = other._cgiAllowed;
-    _autoIndexOn = other._autoIndexOn;
-    _isRooted = other._isRooted;
-    _rootedTo = other._rootedTo;
+	// Copy other primitive members
+	_isRedirected = other._isRedirected;
+	_redirectPath = other._redirectPath;
+	_hasDefaultPage = other._hasDefaultPage;
+	_defaultPage = other._defaultPage;
+	_postAllowed = other._postAllowed;
+	_getAllowed = other._getAllowed;
+	_deleteAllowed = other._deleteAllowed;
+	_cgiAllowed = other._cgiAllowed;
+	_autoIndexOn = other._autoIndexOn;
+	_isRooted = other._isRooted;
+	_rootedTo = other._rootedTo;
 	_uploadPass = other._uploadPass;
 	_uploadPath = other._uploadPath;
-  }
-  return *this;
+	}
+	return *this;
 }
 
 Folder::~Folder()

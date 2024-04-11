@@ -26,12 +26,11 @@ class Cluster
 		~Cluster(void);
 		Cluster(std::vector<Configuration> configs);
 
-		void	theMainLoop();
+		void	MainLoop();
 
 		std::vector<Server> servers;
 		std::vector<FileSystem *> filesystems;
 		unsigned long serverCount;
-
 };
 
 #endif

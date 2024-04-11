@@ -15,7 +15,6 @@ class Configuration
 		~Configuration(void);
 
 		void printMyVals();
-
 		int	getListenPort();
 		std::string	getHost();
 		std::string getValue(std::string what);
@@ -26,11 +25,13 @@ class Configuration
 		int	_port;
 		std::string _host;
 
-		std::vector<std::pair<std::string, std::map<std::string, std::string>>> _locations;
-		std::map<std::string, std::string>		_serverDirectives;
+		std::vector<std::pair<std::string, std::map<std::string, std::string>>>	_locations;
+		std::map<std::string, std::string>	_serverDirectives;
 
 		std::string trimLeadingSpaces(const std::string& input);
 		std::string trimTrailingSpaces(const std::string& input);
 };
+
+std::vector<Configuration> readAndSetConfigs(const char* pathToConfig);
 
 #endif

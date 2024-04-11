@@ -13,7 +13,7 @@ std::vector<std::string> splitLines(const std::string& input)
 	while ((end = input.find("\r\n", start)) != std::string::npos)
 	{
 		lines.push_back(input.substr(start, end - start));
-		start = end + 2;  // Move to the character after the CRLF
+		start = end + 2;
 	}
 	// Handle the last line (including CRLF if present)
 	if (start < input.size())
@@ -25,24 +25,24 @@ std::vector<std::string> splitLines(const std::string& input)
 
 std::vector<std::string> splitToTokens(const std::string& input, char delimiter)
 {
-    std::vector<std::string> tokens;
-    std::istringstream stream(input);
-    std::string token;
+	std::vector<std::string> tokens;
+	std::istringstream stream(input);
+	std::string token;
 
-    while (std::getline(stream, token, delimiter))
+	while (std::getline(stream, token, delimiter))
 	{
-        tokens.push_back(token);
-    }
-    return tokens;
+		tokens.push_back(token);
+	}
+	return tokens;
 }
 
 std::string trimWhitespace(const std::string& str)
 {
-    size_t first = str.find_first_not_of(" \t\r\n");
-    if (std::string::npos == first)
-    {
-        return "";
-    }
+	size_t first = str.find_first_not_of(" \t\r\n");
+	if (std::string::npos == first)
+	{
+		return "";
+	}
 	return str;
 }
 
@@ -54,14 +54,9 @@ std::string removeTrailing(const std::string& str)
 	return endBoundary;
 }
 
-/******************************************************************************/
-/*						CONSTRUCTORS & DESTRUCTORS							  */
-/******************************************************************************/
-
 HttpRequest::~HttpRequest()
 {
 	headers.clear();
-	
 }
 
 HttpRequest::HttpRequest(std::string buffer, int cs, long long maxBodySize) : 
@@ -90,15 +85,15 @@ HttpRequest::HttpRequest(std::string buffer, int cs, long long maxBodySize) :
 HttpRequest::HttpRequest(const HttpRequest& other) :
 		hasBoundary(other.hasBoundary),
 		hasLeftOverBuffer(other.hasLeftOverBuffer),
-        _cs(other._cs),
-        _cmdReceived(other._cmdReceived),
-        _headersReceived(other._headersReceived),
-        _bodyReceived(other._bodyReceived),
-        method(other.method),
-        path(other.path),
-        protocol(other.protocol),
-        headers(other.headers),
-        body(other.body),
+		_cs(other._cs),
+		_cmdReceived(other._cmdReceived),
+		_headersReceived(other._headersReceived),
+		_bodyReceived(other._bodyReceived),
+		method(other.method),
+		path(other.path),
+		protocol(other.protocol),
+		headers(other.headers),
+		body(other.body),
 		_boundary(other._boundary),
 		_leftOverBuffer(other._leftOverBuffer),
 		_maxBodySize(other._maxBodySize),
@@ -106,7 +101,7 @@ HttpRequest::HttpRequest(const HttpRequest& other) :
 		_previousChunkMissingContent(other._previousChunkMissingContent),
 		_unReceviedChunkSize(other._unReceviedChunkSize),
 		_removedBodySize(other._removedBodySize) {
-    }
+	}
 
 HttpRequest::HttpRequest(unsigned long error_code, int cs) :
 		hasBoundary(false),
@@ -122,8 +117,7 @@ HttpRequest::HttpRequest(unsigned long error_code, int cs) :
 		_boundary(""),
 		_leftOverBuffer(""),
 		_maxBodySize(0),
-		_isChunked(false)
-		{
+		_isChunked(false) {
 	std::string error = std::to_string(error_code);
 	headers.insert(std::make_pair("InternalServerErrorHeader", error));
 }
@@ -134,10 +128,6 @@ std::string HttpRequest::getHost()
 	return it->second;
 }
 
-/******************************************************************************/
-/*							PRIVATE FUNCTIONS								  */
-/******************************************************************************/
-
 int	HttpRequest::getCs()
 {
 	return (_cs);
@@ -145,28 +135,28 @@ int	HttpRequest::getCs()
 
 std::pair<std::string, std::string> HttpRequest::parseHeaderPair(std::string line)
 {
-    size_t colonPos = line.find(':');
-    
-    if (colonPos != std::string::npos && colonPos > 0 && colonPos < line.length() - 1)
-    {
-        std::string key = line.substr(0, colonPos);
-        std::string value = line.substr(colonPos + 2);
-        
-        return std::make_pair(key, value);
-    }
+	size_t colonPos = line.find(':');
 
-    throw std::runtime_error("Error: Invalid header format");
+	if (colonPos != std::string::npos && colonPos > 0 && colonPos < line.length() - 1)
+	{
+		std::string key = line.substr(0, colonPos);
+		std::string value = line.substr(colonPos + 2);
+		
+		return std::make_pair(key, value);
+	}
+
+	throw std::runtime_error("Error: Invalid header format");
 
 }
 
 bool HttpRequest::compareHeaderAndBody()
 {
-    if (headers.find("Content-Length") == headers.end())
+	if (headers.find("Content-Length") == headers.end())
 	{
-        return false;
-    }
-    size_t expectedBodyLength = std::stoul(headers["Content-Length"]) - this->_removedBodySize;
-    return (this->body.size() >= expectedBodyLength);
+		return false;
+	}
+	size_t expectedBodyLength = std::stoul(headers["Content-Length"]) - this->_removedBodySize;
+	return (this->body.size() >= expectedBodyLength);
 }
 
 
@@ -183,18 +173,18 @@ bool	HttpRequest::hasContentLengthHeader()
 
 std::vector<std::string> HttpRequest::splitPipelines(std::string buffer)
 {
-   std::vector<std::string> lines;
-    std::istringstream stream(buffer);
-    std::string line;
+	std::vector<std::string> lines;
+	std::istringstream stream(buffer);
+	std::string line;
 
-    while (std::getline(stream, line))
+	while (std::getline(stream, line))
 	{
-        lines.push_back(line);
-    }
+		lines.push_back(line);
+	}
 	return lines;
 }
 
-void HttpRequest::handleMultipartFormData() //aka pipe lining
+void HttpRequest::handleMultipartFormData()
 {
 	std::string endBoundary = "--" + _boundary + "--";
 	size_t endBoundaryStartIndex = this->body.find(endBoundary);
@@ -262,10 +252,6 @@ bool	HttpRequest::contentShortEnough()
 	return true;
 }
 
-/******************************************************************************/
-/*							PUBLIC FUNCTIONS								  */
-/******************************************************************************/
-
 std::string	HttpRequest::getBody()
 {
 	return this->body;
@@ -303,9 +289,9 @@ bool HttpRequest::seeIfComplete()
 
 void HttpRequest::processChunkedBody(std::vector<std::string> &lines)
 {
-    std::string chunkSizeStr;
-    unsigned long chunkSize;
-    bool isPartialChunk = false;
+	std::string chunkSizeStr;
+	unsigned long chunkSize;
+	bool isPartialChunk = false;
 
 	if (_previousChunkMissingContent)
 	{
@@ -327,41 +313,37 @@ void HttpRequest::processChunkedBody(std::vector<std::string> &lines)
 		_previousChunkMissingContent = false;
 	}
 
-    while (!lines.empty())
-    {
-        chunkSizeStr = lines[0];
-        lines.erase(lines.begin());
+	while (!lines.empty())
+	{
+		chunkSizeStr = lines[0];
+		lines.erase(lines.begin());
 
-        chunkSize = std::stoul(chunkSizeStr, nullptr, 16);
-
-        std::string chunkData = "";
-        while (chunkSize > 0 && chunkData.size() < chunkSize && lines.size() > 0)
-        {
-            chunkData += lines[0];
-            lines.erase(lines.begin());
-        }
-        if (chunkData.size() < chunkSize)
+		chunkSize = std::stoul(chunkSizeStr, nullptr, 16);
+		std::string chunkData = "";
+		while (chunkSize > 0 && chunkData.size() < chunkSize && lines.size() > 0)
 		{
-            isPartialChunk = true;
-        }
-
-        this->body += chunkData;
+			chunkData += lines[0];
+			lines.erase(lines.begin());
+		}
+		if (chunkData.size() < chunkSize)
+		{
+			isPartialChunk = true;
+		}
+		this->body += chunkData;
 		if (lines.size() > 0)
-       		lines.erase(lines.begin());
-
-        if (chunkSize == 0)
+			lines.erase(lines.begin());
+		if (chunkSize == 0)
 		{
-            _bodyReceived = true;
-            return;
-        }
-
-        if (isPartialChunk)
+			_bodyReceived = true;
+			return;
+		}
+		if (isPartialChunk)
 		{
-           _previousChunkMissingContent = true;
-		   _unReceviedChunkSize = chunkSize - chunkData.size();
-		   return;
-        }
-    }
+			_previousChunkMissingContent = true;
+			_unReceviedChunkSize = chunkSize - chunkData.size();
+			return;
+		}
+	}
 }
 
 bool HttpRequest::isForThisServer(std::string &host, std::vector<std::string> &otherHosts)
@@ -436,7 +418,6 @@ void HttpRequest::parseCurrentBuffer(std::string buffer)
 				break;
 		}
 	}
-
 	/*handle chunked*/
 	if (!_isChunked && _headersReceived && method == "POST" && this->headers.count("Transfer-Encoding") > 0)
 	{
@@ -446,7 +427,6 @@ void HttpRequest::parseCurrentBuffer(std::string buffer)
 			_isChunked = true;
 		}
 	}
-
 	/*handle pipelining*/
 	if (!_isChunked	&& _headersReceived && !hasBoundary && method == "POST" && this->headers.count("Content-Type") > 0)
 	{
@@ -472,8 +452,7 @@ void HttpRequest::parseCurrentBuffer(std::string buffer)
 			try
 			{
 				processChunkedBody(lines);
-			} catch (std::exception &e)
-			{
+			} catch (std::exception &e) {
 				throw std::runtime_error("400");
 			}
 		}
@@ -524,20 +503,20 @@ void HttpRequest::parseCurrentBuffer(std::string buffer)
 
 void HttpRequest::printAttributes()
 {
-    std::cout << "Method: " << method << std::endl;
-    std::cout << "Path: " << path << std::endl;
-    std::cout << "Protocol: " << protocol << std::endl;
+	std::cout << "Method: " << method << std::endl;
+	std::cout << "Path: " << path << std::endl;
+	std::cout << "Protocol: " << protocol << std::endl;
 
-    // Print headers
-    std::cout << "Headers:" << std::endl;
-    for (std::map<std::string, std::string>::const_iterator it = headers.begin(); it != headers.end(); ++it) {
-        std::cout << it->first << ": " << it->second << std::endl;
-    }
+	// Print headers
+	std::cout << "Headers:" << std::endl;
+	for (std::map<std::string, std::string>::const_iterator it = headers.begin(); it != headers.end(); ++it) {
+		std::cout << it->first << ": " << it->second << std::endl;
+	}
 
-    // Print body (if not empty)
-    if (!body.empty()) {
-        std::cout << "Body: " << body << std::endl;
-    }
+	// Print body (if not empty)
+	if (!body.empty()) {
+		std::cout << "Body: " << body << std::endl;
+	}
 }
 
 std::string HttpRequest::getMethod()
