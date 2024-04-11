@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cgi python tests</title>
+</head>
+<body>
+  <h1>Test cgi with POST method. The script generates a html pages with the parameter included as text.</h1>
+  <form action="posting.py" method="post" enctype="multipart/form-data">
+    <div>
+      <label for="body">Enter parameter here:</label><br>
+      <textarea id="body" name="body" rows="5" cols="50" required></textarea>
+    </div>
+    <br>
+    <button type="submit">Send POST request to cgi. The script generates a html page.</button>
+  </form>
+  <h1>Test cgi with GET method</h1>
+  <a href="getting.py">Cgi GET</a>
+</body>
+</html>
+

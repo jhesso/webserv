@@ -1,0 +1,21 @@
+
+server
+{
+    listen 400;
+    host localhost:400;
+	server_name serv1;
+    root /;
+	error_page 404 /pages/contact.html;
+	error_page 403 /pages/about.html;
+	location /
+	{
+		GET
+		index /pages/home_page.html;
+	}
+	location /pages/
+	{
+		GET
+	}
+}
+
+

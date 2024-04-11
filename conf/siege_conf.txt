@@ -1,0 +1,10 @@
+server
+{
+    listen 80;
+    host localhost:80;
+	location /
+	{
+		GET
+		index /siege.html;
+	}
+}

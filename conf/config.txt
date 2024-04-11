@@ -1,0 +1,33 @@
+
+server
+{
+    listen 400;
+    host localhost:400;
+	server_name serv1;
+    root /;
+	location /
+	{
+		GET
+		index /pages/home_page.html;
+	}
+	location /pages/
+	{
+		POST GET
+		autoindex on;
+		upload_pass /pages/uploads/;
+	}
+	location /pages/uploads/
+	{
+		POST GET DELETE
+	}
+	location /images/
+	{
+		GET
+		proxy_pass /pages/;
+	}
+	location /cgi-bin/
+	{
+		cgi allowed;
+		POST GET
+	}
+}

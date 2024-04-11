@@ -1,0 +1,13 @@
+server
+{
+    listen 400;
+    host localhost:400;
+	server_name serv1;
+    root /;
+	client_max_body_size 20;
+	location /
+	{
+		GET POST
+		index /pages/home_page.html;
+	}
+}

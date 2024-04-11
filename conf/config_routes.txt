@@ -1,0 +1,19 @@
+
+server
+{
+    listen 400;
+    host localhost:400;
+	server_name serv1;
+    root /;
+	location /
+	{
+		GET
+		#root /pages/;
+		index /pages/home_page.html;
+	}
+	location /pages/
+	{
+		GET
+		autoindex on;
+	}
+}

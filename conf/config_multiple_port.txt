@@ -1,0 +1,40 @@
+
+server
+{
+    listen 400;
+    host localhost:400;
+	server_name serv1;
+    root /;
+	location /
+	{
+		GET
+		index /pages/home_page.html;
+	}
+}
+
+server
+{
+    listen 401;
+    host localhost:401;
+	server_name serv2;
+    root /;
+	location /
+	{
+		GET
+		index /pages/about.html;
+	}
+}
+
+server
+{
+    listen 402;
+    host localhost:402;
+	server_name serv3;
+    root /;
+	location /
+	{
+		GET
+		index /pages/contact.html;
+	}
+}
+
