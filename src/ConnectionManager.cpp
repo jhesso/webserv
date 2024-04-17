@@ -23,26 +23,21 @@ void ConnectionManager::recvMovable(HttpRequest objct)
 
 int ConnectionManager::findObjectIndex(int cs)
 {
-	for (size_t i = 0; i < _requests.size(); ++i)
-	{
-	if (_requests[i].compareCs(cs))
-	{
-		return static_cast<int>(i);
-	}
+	for (size_t i = 0; i < _requests.size(); ++i) {
+		if (_requests[i].compareCs(cs)) {
+			return static_cast<int>(i);
+		}
 	}
 	return -1;
 }
 
 int	ConnectionManager::handleResponse()
 {
-	for (unsigned long i = 0; i < _responses.size(); i++)
-	{
-		if (_responses[i].isReady())
-		{
+	for (unsigned long i = 0; i < _responses.size(); i++) {
+		if (_responses[i].isReady()) {
 			try {
 				_responses[i].sendResponse();
-				if (_responses[i].hasBeenSent())
-				{
+				if (_responses[i].hasBeenSent()) {
 					_responsesReady--;
 					_responses.erase(_responses.begin() + i);
 				}
@@ -62,8 +57,7 @@ int	ConnectionManager::handleResponse()
 
 bool	ConnectionManager::hasRunningProcesses()
 {
-	for (unsigned long i = 0; i < _responses.size(); i++)
-	{
+	for (unsigned long i = 0; i < _responses.size(); i++) {
 		if (_responses[i].hasRunningProcess())
 			return true;
 	}
@@ -72,21 +66,17 @@ bool	ConnectionManager::hasRunningProcesses()
 
 bool	ConnectionManager::completeProcess()
 {
-	for (unsigned long i = 0; i < _responses.size(); i++)
-	{
-		if (_responses[i].hasRunningProcess())
-		{
+	for (unsigned long i = 0; i < _responses.size(); i++) {
+		if (_responses[i].hasRunningProcess()) {
 			std::chrono::time_point<std::chrono::steady_clock> _cur = std::chrono::steady_clock::now();
 			auto duration = _cur - _responses[i].getTime();
 			int stat;
-			if (waitpid(_responses[i].getPid(), &stat, WNOHANG) > 0)
-			{
+			if (waitpid(_responses[i].getPid(), &stat, WNOHANG) > 0) {
 				_responses[i].completeMe(stat);
 				_responsesReady++;
 				return true;
 			}
-			else if (duration > std::chrono::seconds(5))
-			{
+			else if (duration > std::chrono::seconds(5)) {
 				kill(_responses[i].getPid(), SIGKILL);
 				_responses[i].completeMe(-1);
 				_responsesReady++;
@@ -112,16 +102,12 @@ bool	ConnectionManager::handleConnection(int cs)
 
 	ssize_t bytesRead = recv(cs, buffer, bufferSize - 1, 0);
 	if (bytesRead == -1 || bytesRead == 0)
-	{
 		return false;
-	}
-	else
-	{
+	else {
 		buffer[bytesRead] = '\0';
 
 		int indexOfRequest = findObjectIndex(cs);
-		if (indexOfRequest == -1)
-		{
+		if (indexOfRequest == -1) {
 			try {
 				_requests.push_back(HttpRequest(buffer, cs, this->_parent->getBodySize()));
 			}
@@ -131,24 +117,20 @@ bool	ConnectionManager::handleConnection(int cs)
 				_responsesReady++;
 				return true;
 			}
-			if (_requests.back().seeIfComplete())
-			{
-				if (_requests.back().isForThisServer(this->_parent->_host, this->_parent->_otherHosts))
-				{
+			if (_requests.back().seeIfComplete()) {
+				if (_requests.back().isForThisServer(this->_parent->_host, this->_parent->_otherHosts)) {
 					_responses.push_back(HttpResponse(_requests.back(), this->_parent));
 					_requests.pop_back();
 					if (_responses.back().isReady())
 						_responsesReady++;
 				}
-				else
-				{
+				else {
 					_hasMovableRequest = true;
 					_movableIndex = _requests.size() - 1;
 				}
 			}
 		}
-		else
-		{
+		else {
 			try {
 				_requests[indexOfRequest].parseCurrentBuffer(buffer);
 			}
@@ -159,8 +141,7 @@ bool	ConnectionManager::handleConnection(int cs)
 				_responsesReady++;
 				return true;
 			}
-			if (_requests[indexOfRequest].seeIfComplete())
-			{
+			if (_requests[indexOfRequest].seeIfComplete()) {
 				if (_requests.back().isForThisServer(this->_parent->_host, this->_parent->_otherHosts))
 				{
 					_responses.push_back(HttpResponse(_requests[indexOfRequest], this->_parent));
@@ -168,8 +149,7 @@ bool	ConnectionManager::handleConnection(int cs)
 					if (_responses.back().isReady())
 						_responsesReady++;
 				}
-				else
-				{
+				else {
 					_hasMovableRequest = true;
 					_movableIndex = _requests.size() - 1;
 				}

@@ -6,41 +6,34 @@ std::vector<std::string> splitConfigs(const std::string& configFile)
 	std::vector<std::string> serverConfigs;
 
 	std::ifstream file(configFile);
-	if (!file.is_open())
-	{
+	if (!file.is_open()) {
 		std::cerr << "Error: Could not open configuration file: " << configFile << std::endl;
 		return serverConfigs;
 	}
 	std::string configBlock;
 	std::string line;
-	while (std::getline(file, line))
-	{
+	while (std::getline(file, line)) {
 		if (line.empty())
 			continue;
 		std::string trimmedLine = line.substr(line.find_first_not_of(" \t"));
 		trimmedLine = trimmedLine.substr(0, trimmedLine.find_last_not_of(" \t") + 1);
-		if (trimmedLine == "server")
-		{
+		if (trimmedLine == "server") {
 			std::getline(file, line);
 			line = line.substr(line.find_first_not_of(" \t"));
 			line = line.substr(0, line.find_last_not_of(" \t") + 1);
 			if (line != "{")
 				throw std::runtime_error("Error: server block must start with {");
 			int brackets = 1;
-			while (std::getline(file, line) && brackets)
-			{
+			while (std::getline(file, line) && brackets) {
 				line = line.substr(line.find_first_not_of(" \t"));
 				line = line.substr(0, line.find_last_not_of(" \t") + 1);
-				if (!line.empty())
-				{
-					if (line.find("}") != std::string::npos)
-					{
+				if (!line.empty()) {
+					if (line.find("}") != std::string::npos) {
 						brackets--;
 						if (brackets)
 							configBlock += line + "\n";
 					}
-					else if (line.find("{") != std::string::npos)
-					{
+					else if (line.find("{") != std::string::npos) {
 						configBlock += line + "\n";
 						brackets++;
 					}
@@ -64,8 +57,7 @@ std::vector<Config> readAndSetConfigs(const char* pathToConfig)
 
 	std::vector<std::string> serverConfigs = splitConfigs(pathToConfig);
 
-	for (std::vector<std::string>::iterator it = serverConfigs.begin(); it != serverConfigs.end(); ++it)
-	{
+	for (std::vector<std::string>::iterator it = serverConfigs.begin(); it != serverConfigs.end(); ++it) {
 		std::string& serverConfig = *it;
 		try {
 			Config config(serverConfig);
@@ -77,8 +69,6 @@ std::vector<Config> readAndSetConfigs(const char* pathToConfig)
 		}
 	}
 	if (ret.size() < 1)
-	{
 		throw std::runtime_error("Error: No viable configurations found. Aborting initialization");
-	}
 	return ret;
 }

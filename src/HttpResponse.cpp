@@ -67,17 +67,13 @@ void	HttpResponse::handleRooted()
 {
 	std::string path = _reqPath;
 
-	for (size_t i = 0; i < path.size(); i++)
-	{
-		if (path[i] == '/')
-		{
+	for (size_t i = 0; i < path.size(); i++) {
+		if (path[i] == '/') {
 			std::string pathToCheck = path.substr(0, i + 1);
 			std::pair<std::string, int> entry = this->_parent->_fileSystem->findWithPath(pathToCheck);
-			if (entry.second == IS_ACCESSIBLE_DIRECTORY)
-			{
+			if (entry.second == IS_ACCESSIBLE_DIRECTORY) {
 				Folder folder = this->_parent->_fileSystem->getFolder(pathToCheck);
-				if (folder._isRooted)
-				{
+				if (folder._isRooted) {
 					_reqPath = path.substr(i + 1);
 					_reqPath = folder._rootedTo + _reqPath;
 					return;
@@ -92,8 +88,7 @@ std::string HttpResponse::findFreeName(Folder &folder, std::string path)
 	std::string name = path;
 	size_t dotPos = name.find_last_of('.');
 	std::string extension = "";
-	if (dotPos != std::string::npos)
-	{
+	if (dotPos != std::string::npos) {
 		extension = name.substr(dotPos);
 		name = name.substr(0, dotPos);
 	}
@@ -101,8 +96,7 @@ std::string HttpResponse::findFreeName(Folder &folder, std::string path)
 		extension = ".txt";
 	}
 	int i = 1;
-	while (true)
-	{
+	while (true) {
 		try {
 			folder.findEntry(name + std::to_string(i) + extension);
 			i++;
@@ -118,39 +112,31 @@ std::string HttpResponse::findFreeName(Folder &folder, std::string path)
 void	HttpResponse::doGet()
 {
 	std::pair<std::string, int> entry = this->_parent->_fileSystem->findWithPath(_reqPath);
-	if (entry.second == IS_ACCESSIBLE_DIRECTORY || entry.second == IS_DENIED_DIRECTORY)
-	{
-		if (entry.second == IS_ACCESSIBLE_DIRECTORY)
-		{
+	if (entry.second == IS_ACCESSIBLE_DIRECTORY || entry.second == IS_DENIED_DIRECTORY) {
+		if (entry.second == IS_ACCESSIBLE_DIRECTORY) {
 			Folder &folder = this->_parent->_fileSystem->getFolder(_reqPath);
-
-			if (folder._isRedirected)
-			{
+			if (folder._isRedirected) {
 				_reqPath = folder._redirectPath;
 				infoCode = 307;
 				return;
 			}
-			if (folder._hasDefaultPage || this->_parent->_fileSystem->hasIndex())
-			{
+			if (folder._hasDefaultPage || this->_parent->_fileSystem->hasIndex()) {
 				if (!folder._getAllowed)
 					throw std::runtime_error("403");
-				if (folder._hasDefaultPage)
-				{
+				if (folder._hasDefaultPage) {
 					_body = folder._defaultPage;
 					infoCode = 200;
 					_reqPath = "index.html";
 					return ;
 				}
-				else
-				{
+				else {
 					_body = this->_parent->_fileSystem->getIndex();
 					infoCode = 200;
 					_reqPath = "index.html";
 					return;
 				}
 			}
-			if (folder._autoIndexOn)
-			{
+			if (folder._autoIndexOn) {
 				if (!folder._getAllowed)
 					throw std::runtime_error("403");
 				_body = folder.autoIndexGenerator(_reqPath);
@@ -166,61 +152,48 @@ void	HttpResponse::doGet()
 			throw std::runtime_error("403");
 		}
 	}
-	else if (entry.second == IS_FILE)
-	{
+	else if (entry.second == IS_FILE) {
 		Folder &dir = this->_parent->_fileSystem->getFileParentFolder(_reqPath);
 		if (!dir._getAllowed)
 			throw std::runtime_error("403");
 		_body = entry.first;
 		infoCode = 200;
 	}
-	else {
+	else
 		throw std::runtime_error("404");
-	}
 }
 
 void	HttpResponse::doPost()
 {
-	if (_reqPath.find("upload") != std::string::npos && _reqPath.find("upload") == _reqPath.size() - 6)
-	{
+	if (_reqPath.find("upload") != std::string::npos && _reqPath.find("upload") == _reqPath.size() - 6) {
 		_reqPath = _reqPath.substr(0, _reqPath.size() - 6);
 	}
-	else {
+	else
 		throw std::runtime_error("403");
-	}
 
 	std::pair<std::string, int> entry = this->_parent->_fileSystem->findWithPath(_reqPath);
-	if (entry.second == IS_ACCESSIBLE_DIRECTORY || entry.second == IS_DENIED_DIRECTORY || entry.second == IS_FILE)
-	{
-		if (entry.second == IS_ACCESSIBLE_DIRECTORY)
-		{
+	if (entry.second == IS_ACCESSIBLE_DIRECTORY || entry.second == IS_DENIED_DIRECTORY || entry.second == IS_FILE) {
+		if (entry.second == IS_ACCESSIBLE_DIRECTORY) {
 			Folder &folder = this->_parent->_fileSystem->getFolder(_reqPath);
 			std::string uploadPath = _reqPath;
 
-			if (folder._isRedirected)
-			{
+			if (folder._isRedirected) {
 				_reqPath = folder._redirectPath;
 				infoCode = 307;
 				return ;
 			}
 			if (!folder._postAllowed)
-			{
 				throw std::runtime_error("403");
-			}
 			if (folder._uploadPass)
-			{
 				uploadPath = folder._uploadPath;
-			}
 			try {
 				Folder &activeFolder = this->_parent->_fileSystem->getFolder(uploadPath);
 				std::string fileName = "default";
-				if (_reqHeaders.find("Content-Disposition") != _reqHeaders.end())
-				{
+				if (_reqHeaders.find("Content-Disposition") != _reqHeaders.end()) {
 					auto it = _reqHeaders.find("Content-Disposition");
 					std::string contentDisposition = it->second;
 					size_t namePos = contentDisposition.find("filename=");
-					if (namePos != std::string::npos)
-					{
+					if (namePos != std::string::npos) {
 						size_t start = contentDisposition.find("\"", namePos);
 						size_t end = contentDisposition.find("\"", start + 1);
 						fileName = contentDisposition.substr(start + 1, end - start - 1);
@@ -228,8 +201,7 @@ void	HttpResponse::doPost()
 				}
 				std::string path = uploadPath + fileName;
 
-				if (fileName == "default")
-				{
+				if (fileName == "default") {
 					fileName = findFreeName(activeFolder, path);
 					path = fileName;
 				}
@@ -262,26 +234,20 @@ void	HttpResponse::doPost()
 void	HttpResponse::doDelete()
 {
 	std::pair<std::string, int> entry = this->_parent->_fileSystem->findWithPath(_reqPath);
-	if (entry.second == IS_ACCESSIBLE_DIRECTORY || entry.second == IS_DENIED_DIRECTORY || entry.second == IS_FILE)
-	{
-		if (entry.second == IS_ACCESSIBLE_DIRECTORY)
-		{
+	if (entry.second == IS_ACCESSIBLE_DIRECTORY || entry.second == IS_DENIED_DIRECTORY || entry.second == IS_FILE) {
+		if (entry.second == IS_ACCESSIBLE_DIRECTORY) {
 			Folder &folder = this->_parent->_fileSystem->getFolder(_reqPath);
-			if (folder._isRedirected)
-			{
+			if (folder._isRedirected) {
 				_reqPath = folder._redirectPath;
 				infoCode = 307;
 				return;
 			}
-			else {
+			else
 				throw std::runtime_error("403");
-			}
 		}
-		else if (entry.second == IS_DENIED_DIRECTORY) {
+		else if (entry.second == IS_DENIED_DIRECTORY)
 			throw std::runtime_error("403");
-		}
-		else if (entry.second == IS_FILE)
-		{
+		else if (entry.second == IS_FILE) {
 			Folder &folder = this->_parent->_fileSystem->getFileParentFolder(_reqPath);
 			if (!folder._deleteAllowed)
 				throw std::runtime_error("403");
@@ -290,21 +256,18 @@ void	HttpResponse::doDelete()
 			this->_parent->_fileSystem->_numPendingDeletes++;
 			infoCode = 204;
 		}
-		else {
+		else
 			throw std::runtime_error("403");
-		}
 	}
-	else {
+	else
 		throw std::runtime_error("404");
-	}
 }
 
 char **HttpResponse::createArgv()
 {
 	std::string fileName = _reqPath.substr(_reqPath.find_last_of('/') + 1);
 	char **ret;
-	if (_reqMethod == "POST")
-	{
+	if (_reqMethod == "POST") {
 		ret = new char*[4];
 
 		std::string interpreter = INTERPRETER_PYTHON;
@@ -316,8 +279,7 @@ char **HttpResponse::createArgv()
 		std::strcpy(ret[2], _reqBody.c_str());
 		ret[3] = NULL;
 	}
-	else
-	{
+	else {
 		ret = new char*[3];
 
 		std::string interpreter = INTERPRETER_PYTHON;
@@ -339,13 +301,11 @@ char **HttpResponse::createEnvs()
 		envs["CONTENT_LENGTH"] = it->second;
 	else
 		envs["CONTENT_LENGTH"] = "0";
-
 	auto it2 = _reqHeaders.find("Content-Type");
 	if (it2 != _reqHeaders.end())
 		envs["CONTENT_TYPE"] = it2->second;
 	else
 		envs["CONTENT_TYPE"] = "text/plain";
-
 	envs["AUTH_TYPE"] = "basic";
 	envs["REDIRECT_STATUS"] = "200";
 	envs["GATEWAY_INTERFACE"] = "CGI/1.1";
@@ -355,12 +315,10 @@ char **HttpResponse::createEnvs()
 	envs["SERVER_PORT"] = std::to_string(this->_parent->getSocket());
 	envs["SERVER_PROTOCOL"] = "HTTP/1.1";
 	envs["SERVER_SOFTWARE"] = "webserv404";
-
 	char **ret = new char*[envs.size() + 1];
 	ret[envs.size()] = NULL;
 	int i	= 0;
-	for (auto& iter : envs)
-	{
+	for (auto& iter : envs) {
 		std::string entry = iter.first + "=" + iter.second;
 		ret[i] = new char[entry.size() + 1];
 		std::strcpy(ret[i], entry.c_str());
@@ -372,8 +330,7 @@ char **HttpResponse::createEnvs()
 void	HttpResponse::doCgi()
 {
 	Folder &folder = this->_parent->_fileSystem->getFileParentFolder(_reqPath);
-	if (folder._isRedirected)
-	{
+	if (folder._isRedirected) {
 		_reqPath = folder._redirectPath;
 		infoCode = 307;
 		return;
@@ -383,14 +340,12 @@ void	HttpResponse::doCgi()
 		throw std::runtime_error("500");
 	_readFd = fds[0];
 	int pid	= fork();
-	if (pid == -1)
-	{
+	if (pid == -1) {
 		close(fds[0]);
 		close(fds[1]);
 		throw std::runtime_error("500");
 	}
-	if (pid == 0)
-	{
+	if (pid == 0) {
 		std::string pathWithoutEndPoint = _reqPath.substr(0, _reqPath.find_last_of('/'));
 		pathWithoutEndPoint += "/";
 		if (chdir(("." + pathWithoutEndPoint).c_str()) != 0)
@@ -399,8 +354,7 @@ void	HttpResponse::doCgi()
 			std::exit(EXIT_FAILURE);
 		char **argv = createArgv();
 		char **envs = createEnvs();
-		if (execve(INTERPRETER_PYTHON, argv, envs) == -1)
-		{
+		if (execve(INTERPRETER_PYTHON, argv, envs) == -1) {
 			delete[] argv;
 			delete[] envs;
 			std::exit(EXIT_FAILURE);
@@ -409,8 +363,7 @@ void	HttpResponse::doCgi()
 		delete[] envs;
 		std::exit(EXIT_SUCCESS);
 	}
-	else
-	{
+	else {
 		_childPid = pid;
 		close(fds[1]);
 		_time = std::chrono::steady_clock::now();
@@ -420,20 +373,16 @@ void	HttpResponse::doCgi()
 
 bool HttpResponse::completeMe(int status)
 {
-	if (status == EXIT_SUCCESS)
-	{
+	if (status == EXIT_SUCCESS) {
 		char buffer[4096];
 		ssize_t bytesRead;
-		while ((bytesRead = read(_readFd, buffer, 4096)) > 0)
-		{
-			if (bytesRead == -1)
-			{
+		while ((bytesRead = read(_readFd, buffer, 4096)) > 0) {
+			if (bytesRead == -1) {
 				infoCode = 500;
 				this->_body = findErrorPage(this->infoCode);
 				break;
 			}
-			else if (bytesRead == 0)
-			{
+			else if (bytesRead == 0) {
 				infoCode = 200;
 				break;
 			}
@@ -512,35 +461,29 @@ std::string	HttpResponse::findPhrase(int code)
 		{511, "Network Authentication Required"}
 	};
 	std::map<int, std::string>::const_iterator it = phrases.find(code);
-	if (it != phrases.end()) {
+	if (it != phrases.end())
 		return it->second;
-	}
-	else {
+	else
 		return "Unknown Status Code";
-	}
 }
 
 bool	HttpResponse::isCgi()
 {
 	std::string pathToCheck = _reqPath;
 	size_t dotPos = pathToCheck.find_last_of('.');
-	if (dotPos != std::string::npos)
-	{
+	if (dotPos != std::string::npos) {
 		std::string fileExtension = pathToCheck.substr(dotPos + 1);
 		std::transform(fileExtension.begin(), fileExtension.end(), fileExtension.begin(), ::tolower);
 		if (fileExtension != "py") // if want more cgi. add extensions here
 			return false;
 	}
 	std::pair<std::string, int> entry = this->_parent->_fileSystem->findWithPath(_reqPath);
-	if (entry.second == IS_FILE)
-	{
+	if (entry.second == IS_FILE) {
 		Folder &folder = this->_parent->_fileSystem->getFileParentFolder(_reqPath);
-		if (folder._cgiAllowed) {
+		if (folder._cgiAllowed)
 			return true;
-		}
-		else {
+		else
 			return false;
-		}
 	}
 	return false;
 }
@@ -551,8 +494,7 @@ std::string	HttpResponse::getContentType()
 
 	size_t dotPos = pathToCheck.find_last_of('.');
 
-	if (dotPos != std::string::npos)
-	{
+	if (dotPos != std::string::npos) {
 		std::string fileExtension = pathToCheck.substr(dotPos + 1);
 
 		std::transform(fileExtension.begin(), fileExtension.end(), fileExtension.begin(), ::tolower);
@@ -568,15 +510,12 @@ std::string	HttpResponse::getContentType()
 		};
 
 		std::map<std::string, std::string>::const_iterator it = contentTypes.find(fileExtension);
-		if (it != contentTypes.end()) {
+		if (it != contentTypes.end())
 			return it->second; // Return the mapped content type
-		}
-		else
-		{
+		else {
 			std::string contentLine = _body.substr(0, _body.find("\n"));
 			std::transform(contentLine.begin(), contentLine.end(), contentLine.begin(), ::tolower);
-			if (contentLine.find("content-type:") != std::string::npos)
-			{
+			if (contentLine.find("content-type:") != std::string::npos) {
 				size_t start = contentLine.find(":") + 1;
 				size_t end = contentLine.size();
 				std::string contentType = contentLine.substr(start, end - start);
@@ -587,9 +526,8 @@ std::string	HttpResponse::getContentType()
 			return "application/octet-stream"; // Default for unknown types
 		}
 	}
-	else {
+	else
 		return "application/octet-stream";
-	}
 }
 
 std::string	HttpResponse::getContentLength()
@@ -614,8 +552,8 @@ bool	HttpResponse::hasBeenSent()
 
 void	HttpResponse::parseResponse()
 {
-	if (infoCode == 307 || infoCode == 308) //parse redirection
-	{
+	// Parse redirection
+	if (infoCode == 307 || infoCode == 308) {
 		/*status line*/
 		this->_status = "HTTP/1.1 ";
 		this->_status += std::to_string(infoCode);
@@ -664,31 +602,20 @@ void	HttpResponse::executeCmd()
 {
 	try {
 		handleRooted();
-		if (_reqHeaders.find("InternalServerErrorHeader") != _reqHeaders.end())
-		{
+		if (_reqHeaders.find("InternalServerErrorHeader") != _reqHeaders.end()) {
 			auto it = _reqHeaders.find("InternalServerErrorHeader");
 			throw std::runtime_error(it->second);
 		}
 		else if ((_reqMethod == "GET" || _reqMethod == "POST") && isCgi())
-		{
 			doCgi();
-		}
 		else if (_reqMethod == "GET")
-		{
 			doGet();
-		}
 		else if (_reqMethod == "POST")
-		{
 			doPost();
-		}
 		else if (_reqMethod == "DELETE")
-		{
 			doDelete();
-		}
 		else
-		{
 			throw std::runtime_error("405");
-		}
 	}
 	catch (std::exception &e) {
 		this->infoCode = std::stoi(e.what());
@@ -709,22 +636,16 @@ void HttpResponse::sendResponse()
 	size_t bytesRemaining;
 
 	bytesRemaining = _response.size();
-	if (bytesRemaining > 0)
-	{
+	if (bytesRemaining > 0) {
 		bytesSent = send(_cs, _response.c_str(), bytesRemaining, 0);
 		if (bytesSent == -1)
-		{
 			throw std::runtime_error("Error sending response");
-		}
 		bytesRemaining -= bytesSent;
-		if (!bytesRemaining || bytesSent == 0)
-		{
+		if (!bytesRemaining || bytesSent == 0) {
 			isSent = true;
 			return ;
 		}
 		else
-		{
 			_response = _response.substr(bytesSent, _response.size());
-		}
 	}
 }
