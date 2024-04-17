@@ -70,8 +70,8 @@ std::vector<Config> readAndSetConfigs(const char* pathToConfig)
 		try {
 			Config config(serverConfig);
 			ret.push_back(config);
-		} catch (std::exception &e)
-		{
+		}
+		catch (std::exception &e) {
 			std::cout << e.what() << std::endl;
 			std::cout << "Error found in config. The faulty server will not be included" << std::endl;
 		}

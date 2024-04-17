@@ -1,8 +1,10 @@
 #include "../includes/ConnectionManager.hpp"
 
-ConnectionManager::ConnectionManager(Server *parent) : _hasMovableRequest(false), _parent(parent), _responsesReady(0){}
+ConnectionManager::ConnectionManager(Server *parent) : _hasMovableRequest(false), _parent(parent), _responsesReady(0)
+{}
 
-ConnectionManager::~ConnectionManager(void){}
+ConnectionManager::~ConnectionManager(void)
+{}
 
 HttpRequest	ConnectionManager::getMovable()
 {
@@ -38,7 +40,6 @@ int	ConnectionManager::handleResponse()
 		if (_responses[i].isReady())
 		{
 			try {
-
 				_responses[i].sendResponse();
 				if (_responses[i].hasBeenSent())
 				{
@@ -46,7 +47,8 @@ int	ConnectionManager::handleResponse()
 					_responses.erase(_responses.begin() + i);
 				}
 				return -1;
-			} catch (std::exception &e) {
+			}
+			catch (std::exception &e) {
 				std::cerr << "Error in sendResponse(): " << e.what() << std::endl;
 				_responsesReady--;
 				int sock = _responses[i].getCs();
@@ -63,7 +65,7 @@ bool	ConnectionManager::hasRunningProcesses()
 	for (unsigned long i = 0; i < _responses.size(); i++)
 	{
 		if (_responses[i].hasRunningProcess())
-			return (true);
+			return true;
 	}
 	return false;
 }
@@ -122,7 +124,8 @@ bool	ConnectionManager::handleConnection(int cs)
 		{
 			try {
 				_requests.push_back(HttpRequest(buffer, cs, this->_parent->getBodySize()));
-			} catch (std::exception &e) {
+			}
+			catch (std::exception &e) {
 				HttpRequest error = HttpRequest(std::stoul(e.what()), cs);
 				_responses.push_back(HttpResponse(error, this->_parent));
 				_responsesReady++;
@@ -148,7 +151,8 @@ bool	ConnectionManager::handleConnection(int cs)
 		{
 			try {
 				_requests[indexOfRequest].parseCurrentBuffer(buffer);
-			} catch (std::exception &e) {
+			}
+			catch (std::exception &e) {
 				_requests.erase(_requests.begin() + indexOfRequest);
 				HttpRequest error = HttpRequest(std::stoul(e.what()), cs);
 				_responses.push_back(HttpResponse(error, this->_parent));

@@ -4,7 +4,7 @@
 /*						CONSTRUCTORS & DESTRUCTORS								*/
 /******************************************************************************/
 
-HttpResponse::HttpResponse(HttpRequest &src, Server *parent): 
+HttpResponse::HttpResponse(HttpRequest &src, Server *parent):
 		_cs(src.getCs()),
 		imReady(false),
 		isSent(false),
@@ -108,8 +108,7 @@ std::string HttpResponse::findFreeName(Folder &folder, std::string path)
 			i++;
 			continue;
 		}
-		catch (std::exception)
-		{
+		catch (std::exception) {
 			return (name + std::to_string(i) + extension);
 		}
 		i++;
@@ -237,8 +236,7 @@ void	HttpResponse::doPost()
 				try {
 					activeFolder.findEntry(path);
 				}
-				catch (std::exception)
-				{
+				catch (std::exception) {
 					activeFolder.createEntry(path, _reqBody);
 					this->_parent->_fileSystem->_pendingEntries.emplace(path, _reqBody);
 					this->_parent->_fileSystem->_numPendingEntries++;
@@ -598,7 +596,8 @@ std::string	HttpResponse::getContentLength()
 {
 	try {
 		return std::to_string(this->_body.size());
-	} catch (std::exception &e) {
+	}
+	catch (std::exception &e) {
 		return ("0");
 	}
 }
@@ -654,7 +653,7 @@ void	HttpResponse::parseResponse()
 	this->_headers += "Connection:";
 	this->_headers += getConnection();
 	this->_headers += "\r\n\r\n";
-	
+
 	/*Note: body is parsed in executeCmd*/
 	std::string	combined = _status + _headers + _body;
 	_response = combined;
@@ -691,8 +690,7 @@ void	HttpResponse::executeCmd()
 			throw std::runtime_error("405");
 		}
 	}
-	catch (std::exception &e)
-	{
+	catch (std::exception &e) {
 		this->infoCode = std::stoi(e.what());
 		this->_body = findErrorPage(this->infoCode);
 	}

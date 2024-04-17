@@ -36,7 +36,8 @@ FileSystem::FileSystem(Config &Config):
 				_hasErrorPage = true;
 			}
 		}
-	} catch (std::exception &e) {
+	}
+	catch (std::exception &e) {
 		_hasErrorPage = false;
 	}
 	if (!_index.empty())
@@ -77,12 +78,10 @@ FileSystem::~FileSystem(void)
 
 std::string FileSystem::getErrorPage(int errorNum)
 {
-	try
-	{
+	try {
 		return _error_pages.at(errorNum);
 	}
-	catch (std::exception)
-	{
+	catch (std::exception) {
 		return "";
 	}
 }
@@ -138,8 +137,7 @@ std::map<std::string, DirOrFile>  FileSystem::readDirectory(std::string path)
 	struct dirent *entry;
 	while ((entry = readdir(dir)) != nullptr)
 	{
-		try
-		{
+		try {
 			if (entry->d_type != DT_REG && entry->d_type != DT_DIR)
 				continue;
 			if (entry->d_type == DT_DIR)
@@ -151,8 +149,7 @@ std::map<std::string, DirOrFile>  FileSystem::readDirectory(std::string path)
 				folder.emplace(path + entry->d_name, DirOrFile(false, entry->d_name, path));
 			}
 		}
-		catch (std::exception &e)
-		{
+		catch (std::exception &e) {
 			(void)e;
 			continue;
 		}
@@ -172,15 +169,12 @@ void FileSystem::printFileSystem()
 
 std::pair<std::string, int> FileSystem::findWithPath(std::string &path)
 {
-	try
-	{
+	try {
 		_fileSystem.at(path);
 		return (std::make_pair("", IS_ACCESSIBLE_DIRECTORY));
 	}
-	catch (std::exception)
-	{
-		try
-		{
+	catch (std::exception) {
+		try {
 			size_t lastSlashPos = path.find_last_of("/");
 			std::string modifiedPath = "";
 			if (lastSlashPos != std::string::npos && lastSlashPos != 0)
@@ -229,8 +223,7 @@ std::pair<std::string, int> FileSystem::findWithPath(std::string &path)
 				throw;
 			}
 		}
-		catch (std::exception)
-		{
+		catch (std::exception) {
 			return (std::make_pair("", NOT_FOUND));
 		}
 	}

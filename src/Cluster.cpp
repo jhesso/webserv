@@ -30,8 +30,7 @@ Cluster::Cluster(std::vector<Config> configs)
 	global_shouldRun = true;
 	signal(SIGINT, signalHandler);
 	signal(SIGPIPE, sigpipe_handler);
-	try
-	{
+	try {
 		this->serverCount = configs.size();
 		FileSystem *ptr;
 		std::vector<std::pair<int,int>> portsAndSocks;

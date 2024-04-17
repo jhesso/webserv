@@ -59,12 +59,12 @@ HttpRequest::~HttpRequest()
 	headers.clear();
 }
 
-HttpRequest::HttpRequest(std::string buffer, int cs, long long maxBodySize) : 
+HttpRequest::HttpRequest(std::string buffer, int cs, long long maxBodySize) :
 	hasBoundary(false),
 	hasLeftOverBuffer(false),
 	_cs(cs),
 	_cmdReceived(false),
-	_headersReceived(false), 
+	_headersReceived(false),
 	_bodyReceived(false),
 	body(""),
 	_maxBodySize(maxBodySize),
@@ -76,7 +76,8 @@ HttpRequest::HttpRequest(std::string buffer, int cs, long long maxBodySize) :
 	this->_cs = cs;
 	try {
 		this->parseCurrentBuffer(buffer);
-	} catch (std::exception &e) {
+	}
+	catch (std::exception &e) {
 		std::string error = e.what();
 		throw std::runtime_error(error);
 	}
@@ -141,7 +142,7 @@ std::pair<std::string, std::string> HttpRequest::parseHeaderPair(std::string lin
 	{
 		std::string key = line.substr(0, colonPos);
 		std::string value = line.substr(colonPos + 2);
-		
+
 		return std::make_pair(key, value);
 	}
 
@@ -232,8 +233,7 @@ bool	HttpRequest::contentShortEnough()
 {
 	if (auto it = this->headers.find("Content-Length"); it != this->headers.end())
 	{
-		try 
-		{
+		try {
 			if (static_cast<long long>(this->body.size()) > _maxBodySize)
 			{
 				return false;
@@ -243,8 +243,8 @@ bool	HttpRequest::contentShortEnough()
 				return false;
 			}
 			return true;
-		} catch (std::exception &e)
-		{
+		}
+		catch (std::exception &e) {
 			(void)e;
 			return true;
 		}
@@ -390,7 +390,7 @@ void HttpRequest::parseCurrentBuffer(std::string buffer)
 		else
 			throw std::runtime_error("400");
 	}
-	
+
 	while (lines.size() > 0 && !_headersReceived && _cmdReceived)
 	{
 		std::string lineWithoutWhiteSpaces = trimWhitespace(lines[0]);
@@ -405,14 +405,12 @@ void HttpRequest::parseCurrentBuffer(std::string buffer)
 			}
 			break;
 		}
-		try
-		{
+		try {
 			std::pair<std::string, std::string> header = parseHeaderPair(lines[0]);
 			this->headers.insert(header);
 			lines.erase(lines.begin());
 		}
-		catch (std::exception &e)
-		{
+		catch (std::exception &e) {
 				_leftOverBuffer = lines[0]; // remove \n
 				hasLeftOverBuffer = true;
 				break;
@@ -449,10 +447,10 @@ void HttpRequest::parseCurrentBuffer(std::string buffer)
 		std::string requestBody = "";
 		if (_isChunked)
 		{
-			try
-			{
+			try {
 				processChunkedBody(lines);
-			} catch (std::exception &e) {
+			}
+			catch (std::exception &e) {
 				throw std::runtime_error("400");
 			}
 		}
@@ -472,8 +470,8 @@ void HttpRequest::parseCurrentBuffer(std::string buffer)
 				{
 					try {
 						handleMultipartFormData();
-					} catch (std::exception &e)
-					{
+					}
+					catch (std::exception &e) {
 						throw std::runtime_error("400");
 					}
 				}
