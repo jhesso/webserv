@@ -1,4 +1,4 @@
-#include "../includes/Configuration.hpp"
+#include "../includes/Config.hpp"
 #include "../includes/Cluster.hpp"
 
 int main(int argc, char **argv)
@@ -9,7 +9,7 @@ int main(int argc, char **argv)
 	}
 	try {
 		std::cout << "###INITIALIZING###" << std::endl;
-		std::vector<Configuration> conf_array = readAndSetConfigs(argv[1]);
+		std::vector<Config> conf_array = readAndSetConfigs(argv[1]);
 		Cluster cluster(conf_array);
 		cluster.MainLoop();
 	}

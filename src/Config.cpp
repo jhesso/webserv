@@ -1,6 +1,6 @@
-#include "../includes/Configuration.hpp"
+#include "../includes/Config.hpp"
 
-Configuration::Configuration(std::string configData)
+Config::Config(std::string configData)
 {
 	std::string line;
 	std::istringstream configStream(configData);
@@ -58,7 +58,7 @@ Configuration::Configuration(std::string configData)
 
 					if (value.find("POST") != std::string::npos && key.find("POST") == std::string::npos)
 						locationDirectives["POST"] = "";
-					if (value.find("GET") != std::string::npos && key.find("GET") == std::string::npos)	
+					if (value.find("GET") != std::string::npos && key.find("GET") == std::string::npos)
 						locationDirectives["GET"] = "";
 					if (value.find("DELETE") != std::string::npos && key.find("DELETE") == std::string::npos)
 						locationDirectives["DELETE"] = "";
@@ -99,7 +99,7 @@ Configuration::Configuration(std::string configData)
 				{
 					if (!std::isdigit(errorNum[i]))
 					{
-						throw std::runtime_error("Error: error code not a digit"); 
+						throw std::runtime_error("Error: error code not a digit");
 					}
 				}
 				key = key + " " + errorNum;
@@ -126,9 +126,9 @@ Configuration::Configuration(std::string configData)
 		throw std::runtime_error("Error: no host directive found");
 }
 
-Configuration::~Configuration(void) {}
+Config::~Config(void) {}
 
-std::string Configuration::trimLeadingSpaces(const std::string& input)
+std::string Config::trimLeadingSpaces(const std::string& input)
 {
 	size_t startPos = input.find_first_not_of(" \t");
 	if (startPos == std::string::npos)
@@ -138,7 +138,7 @@ std::string Configuration::trimLeadingSpaces(const std::string& input)
 	return input.substr(startPos);
 }
 
-std::string Configuration::trimTrailingSpaces(const std::string& input)
+std::string Config::trimTrailingSpaces(const std::string& input)
 {
 	size_t endPos = input.find_last_not_of(" \t");
 	if (endPos == std::string::npos)
@@ -148,7 +148,7 @@ std::string Configuration::trimTrailingSpaces(const std::string& input)
 	return input.substr(0, endPos + 1);
 }
 
-void Configuration::printMyVals()
+void Config::printMyVals()
 {
 	/*print all server directives. then print all locations*/
 	std::cout << "##server directives##" << std::endl;
@@ -167,7 +167,7 @@ void Configuration::printMyVals()
 	}
 }
 
-std::string	Configuration::getValue(std::string what)
+std::string	Config::getValue(std::string what)
 {
 	auto it = _serverDirectives.find(what);
 	if (it != _serverDirectives.end())
@@ -177,17 +177,17 @@ std::string	Configuration::getValue(std::string what)
 	return "";
 }
 
-std::vector<std::pair<std::string, std::map<std::string, std::string>>> Configuration::getLocations()
+std::vector<std::pair<std::string, std::map<std::string, std::string>>> Config::getLocations()
 {
 	return this->_locations;
 }
 
-int	Configuration::getListenPort()
+int	Config::getListenPort()
 {
 	return _port;
 }
 
-std::string	Configuration::getHost()
+std::string	Config::getHost()
 {
 	return _host;
 }

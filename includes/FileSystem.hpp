@@ -11,7 +11,7 @@
 #include <utility>
 #include <filesystem>
 #include "DirOrFile.hpp"
-#include "Configuration.hpp"
+#include "Config.hpp"
 #include "Folder.hpp"
 
 class Folder;
@@ -51,7 +51,7 @@ class FileSystem
 		Folder &getFolder(std::string &path);
 		Folder &getFileParentFolder(std::string &path);
 
-		FileSystem(Configuration &configuration);
+		FileSystem(Config &Config);
 		FileSystem(FileSystem &other);
 		~FileSystem(void);
 		void printFileSystem();

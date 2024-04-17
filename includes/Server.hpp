@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <utility>
 #include "ConnectionManager.hpp"
-#include "Configuration.hpp"
+#include "Config.hpp"
 #include "FileSystem.hpp"
 
 class ConnectionManager;
@@ -17,7 +17,7 @@ class ConnectionManager;
 class Server
 {
 public:
-    Server(Configuration &configuration, FileSystem *fs, std::vector<std::pair<int, int>> &portsInUse);
+    Server(Config &Config, FileSystem *fs, std::vector<std::pair<int, int>> &portsInUse);
     ~Server();
 	Server(const Server &other);
 	Server& operator=(Server &other);
@@ -31,7 +31,7 @@ public:
 	int getPort();
 	std::string		_host;
 	std::vector<std::string> _otherHosts;
-	
+
 private:
 	int					_serverSocket;
 	int					_port;

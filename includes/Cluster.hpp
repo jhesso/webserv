@@ -10,7 +10,7 @@
 #include <poll.h>
 #include <fcntl.h>
 #include <errno.h>
-#include "Configuration.hpp"
+#include "Config.hpp"
 #include "Server.hpp"
 #include "ConnectionManager.hpp"
 #include "FileSystem.hpp"
@@ -24,7 +24,7 @@ class Cluster
 
 	public:
 		~Cluster(void);
-		Cluster(std::vector<Configuration> configs);
+		Cluster(std::vector<Config> configs);
 
 		void	MainLoop();
 

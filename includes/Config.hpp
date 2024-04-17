@@ -1,5 +1,5 @@
-#ifndef CONFIGURATION_HPP
-# define CONFIGURATION_HPP
+#ifndef CONFIG_HPP
+# define CONFIG_HPP
 
 #include <iostream>
 #include <string>
@@ -8,11 +8,11 @@
 #include <vector>
 #include <map>
 
-class Configuration
+class Config
 {
 	public:
-		Configuration(std::string configData); // read config upon construction // the { } check comes in main
-		~Configuration(void);
+		Config(std::string configData); // read config upon construction // the { } check comes in main
+		~Config(void);
 
 		void printMyVals();
 		int	getListenPort();
@@ -32,6 +32,6 @@ class Configuration
 		std::string trimTrailingSpaces(const std::string& input);
 };
 
-std::vector<Configuration> readAndSetConfigs(const char* pathToConfig);
+std::vector<Config> readAndSetConfigs(const char* pathToConfig);
 
 #endif

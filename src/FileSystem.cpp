@@ -1,9 +1,9 @@
 #include <iostream>
 #include "../includes/FileSystem.hpp"
 
-FileSystem::FileSystem(Configuration &configuration):
-	_root(configuration.getValue("root")),
-	_index((configuration.getValue("index"))),
+FileSystem::FileSystem(Config &Config):
+	_root(Config.getValue("root")),
+	_index((Config.getValue("index"))),
 	_hasIndex(false),
 	_hasErrorPage(false),
 	_numPendingEntries(0),
@@ -14,7 +14,7 @@ FileSystem::FileSystem(Configuration &configuration):
 	if (!rootExists())
 		throw std::runtime_error("server root doesn't exist");
 	try {
-		std::map<std::string, std::string> &directives = configuration.getDirectives();
+		std::map<std::string, std::string> &directives = Config.getDirectives();
 		for (auto &directive : directives)
 		{
 			std::string  entryKey = directive.first.substr(0, directive.first.find_first_of(" \t"));
@@ -55,14 +55,14 @@ FileSystem::FileSystem(Configuration &configuration):
 			_index = contentia;
 		}
 	}
-	std::vector<std::pair<std::string, std::map<std::string, std::string>>> locations = configuration.getLocations();
+	std::vector<std::pair<std::string, std::map<std::string, std::string>>> locations = Config.getLocations();
 	for (auto& locationPair : locations)
 	{
 		std::string &dirPath = locationPair.first;
 		std::pair<std::string, std::string> paths = createPaths(_root, dirPath);
 		_fileSystem.emplace(dirPath, Folder(readDirectory(dirPath), locations, dirPath));
 	}
-	
+
 }
 
 FileSystem::FileSystem(FileSystem& src)

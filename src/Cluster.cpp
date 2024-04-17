@@ -34,11 +34,11 @@ std::vector<std::string> addHosts(std::vector<Server> &servers, unsigned long my
 		if (i == myIndex)
 			continue;
 		ret.push_back(servers[i]._host);
-	}	
+	}
 	return ret;
 }
 
-Cluster::Cluster(std::vector<Configuration> configs)
+Cluster::Cluster(std::vector<Config> configs)
 {
 	global_shouldRun = true;
 	signal(SIGINT, signalHandler);

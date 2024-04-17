@@ -1,4 +1,4 @@
-#include "../includes/Configuration.hpp"
+#include "../includes/Config.hpp"
 #include "../includes/Cluster.hpp"
 
 std::vector<std::string> splitConfigs(const std::string& configFile)
@@ -58,9 +58,9 @@ std::vector<std::string> splitConfigs(const std::string& configFile)
 	return serverConfigs;
 }
 
-std::vector<Configuration> readAndSetConfigs(const char* pathToConfig)
+std::vector<Config> readAndSetConfigs(const char* pathToConfig)
 {
-	std::vector<Configuration> ret;
+	std::vector<Config> ret;
 
 	std::vector<std::string> serverConfigs = splitConfigs(pathToConfig);
 
@@ -68,7 +68,7 @@ std::vector<Configuration> readAndSetConfigs(const char* pathToConfig)
 	{
 		std::string& serverConfig = *it;
 		try {
-			Configuration config(serverConfig);
+			Config config(serverConfig);
 			ret.push_back(config);
 		} catch (std::exception &e)
 		{

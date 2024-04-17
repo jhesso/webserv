@@ -1,30 +1,46 @@
-NAME = webserv
+# Program name
+NAME		=	webserv
 
-CC = c++
+# Compiler and compilation flags
+CC			=	c++
+CFLAGS		=	-Wall -Wextra -Werror -std=c++17
 
-CFLAGS = -Wall -Wextra -Werror -g -std=c++17
+# Build files and directories
+SRC_PATH	=	src/
+OBJ_PATH	=	obj/
+INC_PATH	=	include/
+SRC			=	main.cpp Cluster.cpp Config.cpp ConnectionManager.cpp DirOrFile.cpp \
+				FileSystem.cpp Folder.cpp HttpRequest.cpp HttpResponse.cpp \
+				ReadConfigs.cpp Server.cpp
+SRCS		=	$(addprefix $(SRC_PATH), $(SRC))
+OBJ			=	$(SRC:.cpp=.o)
+OBJS		=	$(addprefix $(OBJ_PATH), $(OBJ))
+INC			=	-I $(INC_PATH)
 
-SRC = sources/main.cpp sources/Cluster.cpp sources/Configuration.cpp \
-	sources/ConnectionManager.cpp sources/HttpRequest.cpp sources/HttpResponse.cpp \
-	sources/Server.cpp sources/FileSystem.cpp sources/Folder.cpp sources/DirOrFile.cpp \
-	sources/ReadConfigs.cpp
+# Main rule
+all: $(OBJ_PATH) $(NAME)
 
-OBJ = $(SRC:.cpp=.o)
+# Object directory rule
+$(OBJ_PATH):
+	mkdir -p $(OBJ_PATH)
 
-all: $(NAME)
+# Objects rule
+$(OBJ_PATH)%.o: $(SRC_PATH)%.cpp
+	$(CC) $(CFLAGS) -c $< -o $@ $(INC)
 
-$(NAME): $(OBJ)
-	$(CC) $(CFLAGS) -o $(NAME) $(OBJ)
+# Program linking rule
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $@ $(INC)
 
-%.o: %.cpp
-	$(CC) $(CFLAGS) -o $@ -c $<
-
+# Clean up build files
 clean:
-	rm -rf sources/*.o
+	/bin/rm -rf $(OBJ_PATH)
 
+# Remove program executable
 fclean: clean
-	rm -f $(NAME)
+	/bin/rm -f $(NAME)
 
+# Clean and recompile project
 re: fclean all
 
-tidy: all clean
+.PHONY: all clean fclean re

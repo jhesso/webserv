@@ -19,7 +19,7 @@ Server::Server(const Server &other) : _connectionManager(new ConnectionManager(t
 
 Server& Server::operator=(Server& other)
 {
-	if (this != &other) 
+	if (this != &other)
 	{
 		delete this->_connectionManager;
 		_connectionManager = new ConnectionManager(this);
@@ -36,7 +36,7 @@ Server& Server::operator=(Server& other)
 }
 
 /*port is left*/
-Server::Server(Configuration &configuration, FileSystem *fs, std::vector<std::pair<int,int>> &portsInUse):
+Server::Server(Config &Config, FileSystem *fs, std::vector<std::pair<int,int>> &portsInUse):
 	 _connectionManager(new ConnectionManager(this)),
 	 _fileSystem(fs)
 {
@@ -44,7 +44,7 @@ Server::Server(Configuration &configuration, FileSystem *fs, std::vector<std::pa
 	for (unsigned long i = 0; i < portsInUse.size(); i++)
 	{
 		std::pair<int,int> portAndSock = portsInUse[i];
-		if (portAndSock.first == configuration.getListenPort())
+		if (portAndSock.first == Config.getListenPort())
 		{
 			this->_serverSocket = portAndSock.second;
 			portUnused = false;
@@ -66,7 +66,7 @@ Server::Server(Configuration &configuration, FileSystem *fs, std::vector<std::pa
 		std::memset(&serverAddress, 0, sizeof(serverAddress));
 		serverAddress.sin_family = AF_INET;
 		serverAddress.sin_addr.s_addr = INADDR_ANY; // Accept connections on any interface
-		serverAddress.sin_port = htons(configuration.getListenPort()); // Set the port to right one
+		serverAddress.sin_port = htons(Config.getListenPort()); // Set the port to right one
 		if (bind(_serverSocket, reinterpret_cast<sockaddr*>(&serverAddress), sizeof(serverAddress)) == -1)
 		{
 			close(_serverSocket);
@@ -78,12 +78,12 @@ Server::Server(Configuration &configuration, FileSystem *fs, std::vector<std::pa
 			throw std::runtime_error("Error listening on socket");
 		}
 	}
-	_port = configuration.getListenPort();
-	_serverName = configuration.getValue("server_name");
-	_host = configuration.getValue("host");
-	_root = configuration.getValue("root");
-	if (configuration.getValue("client_max_body_size") != "")
-		_maxBodySizeInBytes = std::stoull(configuration.getValue("client_max_body_size"));
+	_port = Config.getListenPort();
+	_serverName = Config.getValue("server_name");
+	_host = Config.getValue("host");
+	_root = Config.getValue("root");
+	if (Config.getValue("client_max_body_size") != "")
+		_maxBodySizeInBytes = std::stoull(Config.getValue("client_max_body_size"));
 }
 
 Server::~Server(void)
