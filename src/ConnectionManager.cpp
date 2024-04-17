@@ -1,6 +1,6 @@
 #include "ConnectionManager.hpp"
 
-ConnectionManager::ConnectionManager(Server *parent) : _hasMovableRequest(false), _parent(parent), _responsesReady(0)
+ConnectionManager::ConnectionManager(Server *parent) : _parent(parent), _responsesReady(0), _hasMovableRequest(false)
 {}
 
 ConnectionManager::~ConnectionManager(void)
