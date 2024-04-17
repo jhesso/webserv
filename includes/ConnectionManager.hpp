@@ -15,6 +15,14 @@ class HttpResponse;
 
 class ConnectionManager
 {
+	private:
+		Server *_parent;
+		int _responsesReady;
+		std::vector<HttpRequest> _requests;
+		std::vector<HttpResponse> _responses;
+
+		int findObjectIndex(int cs);
+
 	public:
 		ConnectionManager(Server *parent);
 		~ConnectionManager();
@@ -28,14 +36,6 @@ class ConnectionManager
 		unsigned long		_movableIndex;
 		HttpRequest	getMovable();
 		void		recvMovable(HttpRequest objct);
-		
-	private:
-		Server *_parent;
-		int _responsesReady;
-		std::vector<HttpRequest> _requests;
-		std::vector<HttpResponse> _responses;
-
-		int findObjectIndex(int cs);
 };
 
 #endif

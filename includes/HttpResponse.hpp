@@ -17,25 +17,10 @@ class Server;
 
 class HttpResponse
 {
-	public:
-		HttpResponse(HttpRequest &src, Server *parent);
-		~HttpResponse(void);
-
-		void sendResponse();
-
-		
-		bool	isReady();
-		bool	hasBeenSent();
-		bool	hasRunningProcess(){return (_runningProcess);};
-		std::chrono::time_point<std::chrono::steady_clock> getTime(){return (_time);};
-		int		getPid(){return (_childPid);};
-		bool   completeMe(int status);
-		int getCs(){return (_cs);};
-
 	private:
 		void	executeCmd();
 		void	parseResponse();
-		
+
 		int _cs;
 
 		std::string	findPhrase(int code);
@@ -66,7 +51,7 @@ class HttpResponse
 		std::string _reqMethod;
 		std::string	_reqPath;
 		std::string _reqBody;
-	
+
 		Server *_parent;
 
 		void	handleRooted();
@@ -82,6 +67,21 @@ class HttpResponse
 		char **createArgv();
 		char **createEnvs();
 		void doCgi();
+
+	public:
+		HttpResponse(HttpRequest &src, Server *parent);
+		~HttpResponse(void);
+
+		void sendResponse();
+
+
+		bool	isReady();
+		bool	hasBeenSent();
+		bool	hasRunningProcess(){return (_runningProcess);};
+		std::chrono::time_point<std::chrono::steady_clock> getTime(){return (_time);};
+		int		getPid(){return (_childPid);};
+		bool   completeMe(int status);
+		int getCs(){return (_cs);};
 };
 
 #endif

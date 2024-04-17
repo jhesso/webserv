@@ -18,6 +18,7 @@ class Folder
 {
 	private:
 		std::map<std::string, DirOrFile> _folderContent;
+
 	public:
 		bool _isRedirected;
 		std::string _redirectPath;

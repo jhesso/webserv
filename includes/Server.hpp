@@ -16,6 +16,15 @@ class ConnectionManager;
 
 class Server
 {
+private:
+	int					_serverSocket;
+	int					_port;
+
+	std::string		_serverName;
+	std::string		_root;
+
+	long long _maxBodySizeInBytes;
+
 public:
     Server(Config &Config, FileSystem *fs, std::vector<std::pair<int, int>> &portsInUse);
     ~Server();
@@ -30,15 +39,6 @@ public:
 	int getPort();
 	std::string		_host;
 	std::vector<std::string> _otherHosts;
-
-private:
-	int					_serverSocket;
-	int					_port;
-
-	std::string		_serverName;
-	std::string		_root;
-
-	long long _maxBodySizeInBytes;
 };
 
 #endif
