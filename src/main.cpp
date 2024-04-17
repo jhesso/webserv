@@ -1,5 +1,5 @@
-#include "../includes/Config.hpp"
-#include "../includes/Cluster.hpp"
+#include "Config.hpp"
+#include "Cluster.hpp"
 
 int main(int argc, char **argv)
 {
