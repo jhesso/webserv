@@ -1,9 +1,5 @@
 #include "HttpRequest.hpp"
 
-/******************************************************************************/
-/*								HELPERS										  */
-/******************************************************************************/
-
 std::vector<std::string> splitLines(const std::string& input)
 {
 	std::vector<std::string> lines;
@@ -111,7 +107,8 @@ HttpRequest::HttpRequest(unsigned long error_code, int cs) :
 		_boundary(""),
 		_leftOverBuffer(""),
 		_maxBodySize(0),
-		_isChunked(false) {
+		_isChunked(false)
+{
 	std::string error = std::to_string(error_code);
 	headers.insert(std::make_pair("InternalServerErrorHeader", error));
 }
