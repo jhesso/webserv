@@ -8,7 +8,7 @@ CFLAGS		=	-Wall -Wextra -Werror -std=c++17
 # Build files and directories
 SRC_PATH	=	src/
 OBJ_PATH	=	obj/
-INC_PATH	=	include/
+INC_PATH	=	includes/
 SRC			=	main.cpp Cluster.cpp Config.cpp ConnectionManager.cpp DirOrFile.cpp \
 				FileSystem.cpp Folder.cpp HttpRequest.cpp HttpResponse.cpp \
 				ReadConfigs.cpp Server.cpp

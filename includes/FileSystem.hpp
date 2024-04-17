@@ -37,6 +37,7 @@ class FileSystem
 		std::map<std::string, DirOrFile>  readDirectory(std::string path);
 		std::pair<std::string, std::string> createPaths(std::string serverRoot, std::string fromProjectRoot);
 		bool rootExists();
+
 	public:
 		bool hasIndex(){return _hasIndex;};
 		bool hasErrorPage(){return _hasErrorPage;};

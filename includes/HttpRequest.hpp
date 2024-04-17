@@ -10,28 +10,6 @@
 
 class HttpRequest
 {
-	public:
-		HttpRequest(std::string buffer, int cs, long long maxBodySize);
-		HttpRequest(const HttpRequest& other);
-		HttpRequest(unsigned long error_code, int cs);
-		~HttpRequest(void);
-		void printAttributes();
-
-		std::string getMethod();
-		std::string getPath();
-		std::string	getBody();
-		int			getCs();
-		std::map<std::string, std::string>	getHeaders();
-		std::string	getHeaderValue(std::string key);
-		
-		bool		seeIfComplete();
-
-		void		parseCurrentBuffer(std::string buffer);
-		bool		compareCs(int cs);
-
-		bool		isForThisServer(std::string &host, std::vector<std::string> &otherHosts);
-
-		std::string getHost();
 	private:
 		bool		hasBoundary;
 		bool		hasLeftOverBuffer;
@@ -47,7 +25,7 @@ class HttpRequest
 		std::string	protocol;
 
 		std::map<std::string, std::string> headers;
-		
+
 		std::string body;
 
 		std::string _boundary;
@@ -56,7 +34,7 @@ class HttpRequest
 		bool	hasContentLengthHeader();
 		bool	compareHeaderAndBody();
 		std::pair<std::string, std::string> parseHeaderPair(std::string line);
-		
+
 		void	handleMultipartFormData();
 		bool	contentShortEnough();
 
@@ -71,6 +49,29 @@ class HttpRequest
 		int _removedBodySize;
 
 		std::vector<std::string> splitPipelines(std::string buffer);
+
+	public:
+		HttpRequest(std::string buffer, int cs, long long maxBodySize);
+		HttpRequest(const HttpRequest& other);
+		HttpRequest(unsigned long error_code, int cs);
+		~HttpRequest(void);
+		void printAttributes();
+
+		std::string getMethod();
+		std::string getPath();
+		std::string	getBody();
+		int			getCs();
+		std::map<std::string, std::string>	getHeaders();
+		std::string	getHeaderValue(std::string key);
+
+		bool		seeIfComplete();
+
+		void		parseCurrentBuffer(std::string buffer);
+		bool		compareCs(int cs);
+
+		bool		isForThisServer(std::string &host, std::vector<std::string> &otherHosts);
+
+		std::string getHost();
 };
 
 #endif
