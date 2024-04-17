@@ -1,4 +1,4 @@
-#include "../includes/Folder.hpp"
+#include "Folder.hpp"
 
 Folder::Folder(const Folder& other):
 		_isRedirected(other._isRedirected),

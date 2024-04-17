@@ -1,4 +1,4 @@
-#include "../includes/HttpResponse.hpp"
+#include "HttpResponse.hpp"
 
 /******************************************************************************/
 /*						CONSTRUCTORS & DESTRUCTORS								*/

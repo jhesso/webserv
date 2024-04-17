@@ -1,4 +1,4 @@
-#include "../includes/ConnectionManager.hpp"
+#include "ConnectionManager.hpp"
 
 ConnectionManager::ConnectionManager(Server *parent) : _hasMovableRequest(false), _parent(parent), _responsesReady(0)
 {}

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "../includes/FileSystem.hpp"
+#include "FileSystem.hpp"
 
 FileSystem::FileSystem(Config &Config):
 	_root(Config.getValue("root")),

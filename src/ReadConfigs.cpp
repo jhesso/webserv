@@ -1,5 +1,5 @@
-#include "../includes/Config.hpp"
-#include "../includes/Cluster.hpp"
+#include "Config.hpp"
+#include "Cluster.hpp"
 
 std::vector<std::string> splitConfigs(const std::string& configFile)
 {

@@ -1,4 +1,4 @@
-#include "../includes/DirOrFile.hpp"
+#include "DirOrFile.hpp"
 
 DirOrFile::DirOrFile(bool imADir, std::string content)
 {
