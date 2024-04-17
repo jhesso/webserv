@@ -64,9 +64,7 @@ FileSystem::FileSystem(FileSystem& src)
 }
 
 FileSystem::~FileSystem(void)
-{
-	std::cout << "FileSystem destructor called" << std::endl;
-}
+{}
 
 std::string FileSystem::getErrorPage(int errorNum)
 {
