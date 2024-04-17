@@ -13,19 +13,6 @@ void	sigpipe_handler(int sig)
 	(void)sig;
 }
 
-void printMap(const std::map<std::string, std::string>& mapToPrint)
-{
-  if (mapToPrint.empty())
-  {
-	std::cout << "Map is empty." << std::endl;
-	return;
-  }
-  for (const auto& [key, value] : mapToPrint)
-  {
-	std::cout << "Key: " << key << ", Value: " << value << std::endl;
-  }
-}
-
 std::vector<std::string> addHosts(std::vector<Server> &servers, unsigned long myIndex)
 {
 	std::vector<std::string> ret;
