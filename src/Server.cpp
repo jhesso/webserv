@@ -111,13 +111,3 @@ std::string	Server::getValue(std::string what)
 		return _root;
 	return "";
 }
-
-void Server::printMyVals()
-{
-	std::cout << "##server " << _serverName << " has these values##" << std::endl;
-	std::cout << "serverSocket: " << _serverSocket << std::endl;
-	std::cout << "serverName: " << _serverName << std::endl;
-	std::cout << "hostAddress: " << _host << std::endl;
-	std::cout << "rootDir: " << _root << std::endl;
-	std::cout << "###########################" << std::endl;
-}

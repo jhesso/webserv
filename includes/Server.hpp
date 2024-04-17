@@ -24,7 +24,6 @@ public:
 
 	int getSocket();
 	std::string getValue(std::string what);
-	void printMyVals();
 	ConnectionManager *_connectionManager;
 	FileSystem *_fileSystem;
 	long long getBodySize();
