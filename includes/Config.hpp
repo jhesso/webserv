@@ -18,7 +18,6 @@ class Config
 		int	getListenPort();
 		std::string	getHost();
 		std::string getValue(std::string what);
-		std::string	getDirective(std::string what);
 		std::map<std::string, std::string> &getDirectives(){return _serverDirectives;};
 		std::vector<std::pair<std::string, std::map<std::string, std::string>>> getLocations();
 	private:
