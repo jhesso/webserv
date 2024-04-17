@@ -58,7 +58,7 @@ Cluster::Cluster(std::vector<Config> configs)
 
 Cluster::~Cluster(void)
 {
-	std::cout << "cluster destructor called" << std::endl;
+	// std::cout << "cluster destructor called" << std::endl;
 	for (unsigned long i = 0; i < this->filesystems.size(); i++)
 	{
 		delete this->filesystems[i];
@@ -93,7 +93,6 @@ void Cluster::addServers(std::vector<pollfd> &pollfds)
 /*							PUBLIC FUNCTIONS								  */
 /******************************************************************************/
 
-/*need to hange this to have each server to have own connection manage and the right one needs to be called*/
 void Cluster::MainLoop()
 {
 	int clientSocket;

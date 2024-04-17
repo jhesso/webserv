@@ -14,7 +14,6 @@ class Config
 		Config(std::string configData); // read config upon construction // the { } check comes in main
 		~Config(void);
 
-		void printMyVals();
 		int	getListenPort();
 		std::string	getHost();
 		std::string getValue(std::string what);

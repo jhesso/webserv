@@ -148,25 +148,6 @@ std::string Config::trimTrailingSpaces(const std::string& input)
 	return input.substr(0, endPos + 1);
 }
 
-void Config::printMyVals()
-{
-	/*print all server directives. then print all locations*/
-	std::cout << "##server directives##" << std::endl;
-	for (auto& entry : _serverDirectives)
-	{
-		std::cout << entry.first << " : " << entry.second << std::endl;
-	}
-	std::cout << "\n##locations##" << std::endl;
-	for (auto& location : _locations)
-	{
-		std::cout << "\nlocation: " << location.first << std::endl;
-		for (auto& entry : location.second)
-		{
-			std::cout << entry.first << " : " << entry.second << std::endl;
-		}
-	}
-}
-
 std::string	Config::getValue(std::string what)
 {
 	auto it = _serverDirectives.find(what);
