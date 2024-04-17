@@ -1,9 +1,5 @@
 #include "HttpResponse.hpp"
 
-/******************************************************************************/
-/*						CONSTRUCTORS & DESTRUCTORS								*/
-/******************************************************************************/
-
 HttpResponse::HttpResponse(HttpRequest &src, Server *parent):
 		_cs(src.getCs()),
 		imReady(false),
